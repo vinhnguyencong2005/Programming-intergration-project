@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Site</title>
+    <link rel="stylesheet" href="Register.css">
+    <link rel="icon" type="image/png" href="picture/hcmut.png">
+</head>
+<body>
+   
+    <div class="wrapped">
+        <form> 
+            <div class="wrapped-infos">
+                <h1>Register</h1>
+                <div class="input-section" id="Full-name">
+                    <P>Full name</P>
+                    <input type="text" required> 
+                </div>
+
+                <div class="input-section" id="Phone-number">
+                    <p> Phone number </p>
+                    <input type="text" required> 
+                </div>
+
+                <div class="input-section" id="Address">
+                    <p> Your address </p>
+                    <input type="text" required>
+                </div>
+
+                <div class="input-section" id="Username">
+                    <P>User name</P>
+                    <input type="text" placeholder="Username" required>
+                </div>
+                
+                <div class="input-section" id="Password">
+                    <P>Password</P>
+                    <input type="password" placeholder="Password" required>
+                </div>
+
+                <button type="button" onclick="CheckRegister()">Register</button>
+            </div>
+
+        </form>
+    </div>
+</body>
+    <script src="Register.js"></script>
+</html>

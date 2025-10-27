@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile</title>
+    <link rel="stylesheet" href="Profile.css">
+    <link rel="icon" type="image/png" href="picture/hcmut.png">
+</head>
+<body>
+<header>
+  <div class="logo">
+    <img src="picture/newhome.png" alt="home-icon" onclick="ReturnHome()">
+    <h1>MyProfile</h1>
+  </div>
+  <nav>
+
+    <a href="Cart.html">Your cart</a>
+    <a href="#">Contact</a>
+  </nav>
+</header>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <img src="https://i.pravatar.cc/150?img=12" alt="Ảnh đại diện">
+    <h2 id="Username"></h2>
+    <p>Student of HCMUT</p>
+  </div>
+
+  <div class="profile-content">
+    <h3>Contact Information</h3>
+    <p id="email"></p>
+    <p id="phone_number"></p>
+
+    <div class="social-links">
+      <a href="#">Facebook</a>
+      <a href="#">LinkedIn</a>
+      <a href="#">GitHub</a>
+    </div>
+  </div>
+</div>
+
+
+<div class="order-history">
+  <div class="history-header">
+    <h1>Order History</h1>
+    <img src="picture/hcmut.png" alt="history-icon">
+  </div>
+
+  <div class="order-history-list">
+    <!-- Đơn hàng 1 -->
+    <div class="order-item">
+      <h3>Order #001</h3>
+      <p><strong>Order date:</strong> 20/10/2025</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Product name</th>
+            <th>Number</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Product 1</td>
+            <td>1</td>
+            <td>2.500.000₫</td>
+          </tr>
+          <tr>
+            <td>Product 2</td>
+            <td>2</td>
+            <td>600.000₫</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="total"><strong>Total price:</strong> 3.700.000₫</p>
+    </div>
+
+    <!-- Đơn hàng 2 -->
+    <div class="order-item">
+      <h3>Order #002</h3>
+      <p><strong>Order date:</strong> 10/10/2025</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Product name</th>
+            <th>Number</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Product 1</td>
+            <td>1</td>
+            <td>1.200.000₫</td>
+          </tr>
+          <tr>
+            <td>Product 2</td>
+            <td>3</td>
+            <td>450.000₫</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="total"><strong>Total price:</strong> 1.650.000₫</p>
+    </div>
+  </div>
+</div>
+
+<div class="wishlist">
+  <div class="wishlist-header">
+    <h1>Wishlist</h1>
+    <img src="picture/hcmut.png" alt="wishlist-icon">
+  </div>
+
+  <div class="wishlist-list">
+    <div class="wishlist-item">
+      <img src="picture/waveA.png" alt="WaveA">
+      <div class="wishlist-info">
+        <h3>Product 1</h3>
+        <p>Price: <strong>1.500.000₫</strong></p>
+        <button>Add to cart</button>
+      </div>
+    </div>
+
+    <div class="wishlist-item">
+      <img src="picture/AB.png" alt="AB">
+      <div class="wishlist-info">
+        <h3>Product 2</h3>
+        <p>Price: <strong>850.000₫</strong></p>
+        <button>Add to cart</button>
+      </div>
+    </div>
+
+    <div class="wishlist-item">
+      <img src="picture/vision.png" alt="Vision">
+      <div class="wishlist-info">
+        <h3>Honda Vision</h3>
+        <p>Price: <strong>1.100.000₫</strong></p>
+        <button>Add to cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script src="Profile.js"></script>
+</html>

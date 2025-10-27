@@ -1,0 +1,265 @@
+ body {
+    font-family: "Poppins", sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Thanh header */
+  header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    border-radius: 20px;
+    background-color: #e60023; /* Đỏ chủ đạo */
+    color: white;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  header a{
+    padding-right: 30px;
+    font-size: 30px;
+  }
+
+  header a:hover {
+    cursor: pointer;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    padding-left: 0;
+    gap:20px;
+  }
+
+  .logo img {
+    width: 40px;
+    margin: 8px;
+    cursor: pointer;
+  }
+
+  .logo h1 {
+    font-size: 24px;
+    margin: 0;
+  }
+
+  header nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: 0.3s;
+  }
+
+  header nav a:hover {
+    text-decoration: underline;
+  }
+
+  /* Thân profile */
+  .profile-container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+
+  .profile-header {
+    background-color: #e60023;
+    color: white;
+    text-align: center;
+    padding: 40px 0;
+  }
+
+  .profile-header img {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 4px solid white;
+    object-fit: cover;
+  }
+
+  .profile-header h2 {
+    margin-top: 15px;
+    font-size: 22px;
+  }
+
+  .profile-content {
+    padding: 30px 40px;
+  }
+
+  .profile-content h3 {
+    color: #e60023;
+    margin-bottom: 10px;
+  }
+
+  .profile-content p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+  }
+
+  .social-links a {
+    display: inline-block;
+    margin-right: 15px;
+    text-decoration: none;
+    color: #e60023;
+    font-weight: 600;
+    transition: 0.3s;
+  }
+
+  .social-links a:hover {
+    color: black;
+  }
+
+
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    background-color: red;
+    border-radius: 5px;
+    padding-left: 10px;
+  }
+  
+  .history-header img{
+    width: 50px;
+    align-items: center;
+    padding-right: 10px;
+    padding-bottom: 20px;
+  }
+  .order-history {
+  background-color: #fafafa;
+  padding: 30px;
+  margin-top: 40px;
+}
+
+.history-header {
+  text-align: left;
+  color: white;
+  display: flex;
+  align-items: left;
+  justify-content: center;
+  gap: 15px;
+}
+
+.history-header img {
+  width: 50px;
+}
+
+.order-history-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.order-item {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.order-item h3 {
+  color: #b30000;
+  margin-bottom: 10px;
+}
+
+.order-item table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.order-item th, .order-item td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.order-item th {
+  background-color: #b30000;
+  color: white;
+}
+
+.total {
+  text-align: right;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #b30000;
+}
+
+/* ---------- WISHLIST ---------- */
+.wishlist {
+  background-color: #fff0f0;
+  padding: 30px;
+  margin-top: 40px;
+}
+
+.wishlist-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.wishlist-header img {
+  width: 40px;
+}
+
+.wishlist-list {
+  margin-top: 25px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px;
+}
+
+.wishlist-item {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 280px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.wishlist-item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.wishlist-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.wishlist-info h3 {
+  color: #b30000;
+  margin: 10px 0 5px;
+}
+
+.wishlist-info p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.wishlist-info button {
+  margin-top: 10px;
+  background-color: #b30000;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.wishlist-info button:hover {
+  background-color: #800000;
+}

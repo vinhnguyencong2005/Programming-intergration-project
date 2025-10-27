@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product detail</title>
+    <link rel="stylesheet" href="Detail.css">
+    <link rel="icon" type="image/png" href="picture/hcmut.png">
+</head>
+<body>
+    <div class="header">
+        <img src="picture/newhome.png" alt="Home logo" onclick="ReturnHome()">
+        <div class="infos">
+            <a href="cart.html"> Your cart </a>
+            <a href="#"> Chatbox AI </a>
+        </div>
+    </div>
+
+   <!-- <div class="product-info">
+    <h1>Honda Wave Alpha 125</h1>
+    <p class="description">
+        The <strong>Honda Wave Alpha</strong> is one of Honda’s most popular underbone motorcycles, 
+        known for its <span class="highlight">reliability</span>, 
+        <span class="highlight">fuel efficiency</span>, and 
+        <span class="highlight">affordable price</span>. 
+        It features a sleek and compact design with modern styling, making it ideal for daily commuting 
+        in both urban and rural areas. Powered by a 110cc four-stroke engine, the Wave Alpha offers smooth performance, 
+        low fuel consumption, and easy handling. Its durable build, comfortable seating, and low maintenance costs make it 
+        a top choice for both new and experienced riders.
+    </p>
+   </div> -->
+    
+
+    <div id="vehicle-detail"></div>
+
+
+    <div class="product-detail">
+  <!-- Hình xe -->
+        <div class="thumbnail">
+            <img id="mainImage" src="picture/waveA.png" alt="product picture">
+        </div>
+
+  <!-- Thông tin màu sắc -->
+        <div class="color-section">
+            <!--<h3>Sporty Version</h3>
+            <div class="color-row">
+                <div class="color-item" onclick="changeColor('black-red')">
+                    <div class="color-box black-red"></div>
+                    <p>Black Red</p>
+                </div>
+                <div class="color-item" onclick="changeColor('black-blue')">
+                    <div class="color-box black-blue"></div>
+                    <p>Black Blue</p>
+                </div>
+                <div class="color-item" onclick="changeColor('black')">
+                    <div class="color-box black"></div>
+                    <p>Black</p>
+                </div>
+            </div>
+            -->
+            <!-- <h1 class="product-color">Black</h1>
+            <h2>Price:  <span style="color: red;"> 16.000.000 </span> </h2>
+            <h3 class="stock">Quantities in stock: 20</h3> -->
+            <div class="btn">
+                <button onclick="addToCart()">Add to cart</button>
+                 <button id="likeBtn" class="like-btn" onclick="toggleLike()">❤️ Like</button>
+            </div>
+        </div>
+   </div>
+
+   <div class="product-specification"></div>
+
+
+
+
+
+</body>
+<script src="Detail.js"></script>
+</html>

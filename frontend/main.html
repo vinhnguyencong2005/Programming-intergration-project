@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HCMUT VEHICLE</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link rel="stylesheet" href="main.css">
+  <link rel="icon" type="image/png" href="picture/hcmut.png">
+
+
+  <style>
+    #test h1 {
+      color: black;
+      size: 100px
+    }
+  </style>
+</head>
+<body>
+    <div class="header">
+      <img src="picture/profile.png" alt="profile-icon" onclick="MovenewSite('Profile.html')">
+      <div class="infos">
+        <a href="#">Contact</a>
+        <a href="#">Apply</a>
+        <a href="#"> Chatbox AI <a>
+        <a href="cart.html">Your cart</a>
+        <a id="login-links" onclick="checkExistedAccount()" >Login/Logout</a>
+      </div>
+    </div>
+
+    <div class="subheader" id="CustomerSite">
+      <div class="Logo">
+      <img src="picture/hcmut.png" alt="Logo" class="Logo">
+      <h3> Wheel Hub  Automatic Market </h3>
+      </div>
+    </div>
+
+
+    
+    <div class="thumbnail">
+      <center> <img src="picture/thumbn.png"> </center>
+    </div>
+<!-- For show product when enter a brand -->
+    <div class="ribon">
+      <h1> Brands </h1>
+    </div>
+    
+
+    
+    <!-- <div class="show-product">
+      <h1 onclick="showmodels('Honda')"> Honda</h1>
+      <h1 onclick="showmodels('Yamaha')"> Yamaha</h1>
+      <h1 onclick="showmodels('Suzuki')"> Suzuki </h1>
+      <h1 onclick="showmodels('Kymco')">Kymco</h1>
+      <h1 onclick="showmodels('Others')">Others</h1>
+    </div> -->
+
+    <div class="show-product">
+      <button class="brand btn btn-primary" id="Honda">Honda</button>
+      <button class="brand btn btn-primary" id="Yamaha">Yamaha</button>
+      <button class="brand btn btn-primary" id="Sym">Sym</button>
+    </div>
+
+
+    <div id="test"></div>
+
+      <!--Khi ấn vào hãng sẽ show ra các loại xe (xe số, xe ga, xe tay côn....) -->
+      <!-- <div class="product-type">        
+
+
+        <div class="vehicle-type" id="Honda">
+          <h1 onclick="showproducts('Honda','Manual')">Manual</h1>
+          <h1 onclick="showproducts('Honda','Scooter')">Scooter</h1>
+          <h1>Manual Clutch</h1>
+        </div>
+
+        <div class="vehicle-type" id="Yamaha">
+          <h1>Manual</h1>
+          <h1>Scooter</h1>
+        </div>
+
+        <div class="vehicle-type" id="Suzuki">
+          <h1>Manual</h1>
+          <h1>Scooter</h1>
+        </div>
+
+        <div class="vehicle-type" id="Kymco">
+          <h1>Manual</h1>
+          <h1>Scooter</h1>
+          <h1>Another type</h1>
+          <h1>Another type</h1>
+        </div>
+
+        <div class="vehicle-type" id="Others">
+          <h1>Oil</h1>
+          <h1>Others devices</h1>
+        </div>
+      </div>
+    </div> -->
+
+
+<!--Khi ấn vào hãng sẽ show ra sản phẩm  -->
+    <div class="showvehicles"> 
+      <div class="products">
+          <div class="Honda" id="Manual">
+              <img src="picture/waveA.png" alt="vehicle picture">
+              <h1> Wave Alpha </h1>
+              <button onclick="MovenewSite('Detail.html')">Detail</button>
+          </div>
+     </div>
+
+
+
+<!-- For div contact-->
+    <div class = "page-info">
+      <h1> Contact</h1>
+        <div class="page-info-content">
+          <div class="social"> 
+            <div class="items"></div>
+              <img src="picture/fb.png" alt="Facebook logo" class="logo"><a href="https://www.facebook.com/nguyenhuu.thien.3386" target="_blank"> Facebook </a>
+            </div>  
+
+            <div class="items">
+                  <img src="picture/ig.png" alt="Instagram logo" class="logo"><a href="#" target="_blank"> Instagram </a>
+            </div>
+
+            <div class="items">
+                  <img src="picture/mail.png" alt="Instagram logo" class="logo"><a href="#" target="_blank"> Gmail </a>
+            </div>
+          </div>
+
+          <div class="social">
+            <div class="locations"> </div>
+              <img src="picture/add.png" alt="add logo"> 151 Hùng Vương, P.2, TP. Cao Lãnh, Đồng Tháp. 
+            </div> 
+
+            <div class="locations">
+              <img src="picture/add.png" alt="add logo"> 268 Đ. Lý Thường Kiệt, Phường 14, Quận 10, Hồ Chí Minh
+            </div>  
+          </div>
+        </div>
+    </div>
+
+    <!-- -->
+</body>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="main.js"></script>
+</html>
+

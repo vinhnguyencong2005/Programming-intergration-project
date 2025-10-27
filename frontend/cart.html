@@ -1,0 +1,76 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="cart.css">
+</head>
+<body>
+  <div class="logo">
+    <img src="picture/newhome.png" alt="icon-home" onclick="ReturnHome()">
+  </div>
+  <div class="container">
+    <!-- LEFT: danh sách sản phẩm -->
+    <div class="card">
+      <div class="cart-header">
+        <h2>Your Cart</h2>
+        <div class="total-products" style="color:var(--muted);font-size:14px"></div>
+      </div>
+
+      <div class="cart-items"></div>
+
+      <!-- Ghi chú order -->
+      <div style="margin-top:16px;color:var(--muted);font-size:14px">
+        <strong>Note:</strong> Check the product carefully before receiving, warranty according to store policy.
+      </div>
+    </div>
+
+    <!-- RIGHT: summary -->
+    <aside class="card summary">
+      <h3>Payment</h3>
+
+      <div class="line">
+        <span>Temporary price</span>
+        <span style="font-weight:700" class="tempo-price">₫62.250.000</span>
+      </div>
+
+      <div class="line">
+        <span>Delivery fee</span>
+        <span style="color:var(--muted)">Calculated at checkout</span>
+      </div>
+
+      <div class="coupon">
+        <input type="text" placeholder="Enter your voucher" aria-label="coupon">
+        <button>Apply</button>
+      </div>
+
+      <div class="total">
+        <span>Total</span>
+        <span class="total_price" style="font-size:20px">₫62.250.000</span>
+      </div>
+
+      <button class="checkout">Pay</button>
+
+      <div style="margin-top:12px;color:var(--muted);font-size:13px">
+        <strong>Method:</strong> Cash on delivery or bank transfer.
+      </div>
+    </aside>
+  </div>
+
+
+<div class="qr-modal" id="qrModal">
+  <div class="qr-box">
+    <h3>QR Code</h3>
+    <img id="qrcode" src=picture/qr.png>
+    <p id="timer" style="margin-top:10px;color:var(--muted);font-weight:600;"></p>
+    <button onclick="closeQR()">Đóng</button>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="cart.js"></script>
+</body>
+</html>
+
+

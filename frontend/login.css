@@ -1,0 +1,100 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  background-image: url('picture/background.png'); /* Đường dẫn tới ảnh nền */
+  background-size: cover; /* Giúp ảnh phủ toàn màn hình */
+  background-position: center; /* Căn giữa ảnh */
+  background-repeat: no-repeat; /* Không lặp lại ảnh */
+  background-attachment: fixed; /* Giữ ảnh cố định khi cuộn */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.wrapped {
+    width: 420px;
+    background-color: transparent;
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255,255,255,.2);
+    box-shadow:0 0 10px rgba(0,0,0,.2) ;
+    color: white;
+    border-radius: 10px;
+    padding: 30px 40px;
+}
+
+.wrapped h1 {
+    font-size: 36px;
+    text-align: center;
+    color: black;
+}
+
+.wrapped .input-section {
+    width: 100%;
+    height: 50px;
+
+    margin: 30px 0;
+    color:black;
+}
+
+.input-section input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    color: black;
+}
+
+.input-section input::placeholder{
+    color: black;
+}
+
+.wrapped .remember-forgot {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14.5px;
+    margin: -15px 0 15px;
+}
+
+.remember-forgot label input {
+    accent-color: white;
+    margin-right: 3px;
+}
+
+.remember-forgot a{
+    text-decoration: none;
+    color: white;
+}
+
+.remember-forgot a:hover {
+    text-decoration: underline;
+}
+
+.wrapped .btn {
+    width: 100%;
+    height: 45px;
+    background-color: white;
+    border-radius: 40px;
+    cursor: pointer;
+    color: black;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.wrapped .register-link {
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+}
+
+.register-link p a{
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link p a:hover{
+    text-decoration: underline;
+}
