@@ -51,12 +51,30 @@ document.querySelectorAll(".brand").forEach(btn => {
 
         const vehicle = data.vehicles;
 
-        const newArray = vehicle.map((item) => { 
-          console.log(item.VehicleID)
+        // Create an array of promises for fetching images
+        const imagePromises = vehicle.map(item => 
+          fetch("http://localhost:3000/api/vehicle/first_images", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ vehicleID: item.VehicleID })
+          }).then(res => res.json())
+        );
+
+        // Wait for all image requests to complete
+        const imageResults = await Promise.all(imagePromises);
+
+        const newArray = vehicle.map((item, index) => { 
+          console.log(`Processing vehicle ${item.VehicleID} at index ${index}`);
+          const imageData = imageResults[index];
+          console.log('Image data for this vehicle:', imageData);
+          const imageUrl = imageData.success && imageData.imageUrl ? imageData.imageUrl : "picture/waveA.png";
+          
           return `
-                  <div>
-                      <img src="picture/waveA.png" alt="vehicle picture">
-                      <h1> ${item.Name} </h1>
+                  <div class="itemCard">
+                      <img class="showImage" src="${imageUrl}" alt="${item.Name}">
+                      <h1 id="itemName"> ${item.Name} </h1>
                       <button onclick = "openDetail('${item.VehicleID}')">Detail</button>
                   </div>
           `;

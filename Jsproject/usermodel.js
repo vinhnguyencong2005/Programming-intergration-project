@@ -7,35 +7,42 @@ import conn from "./server.js";
 
 // CREATE
 function createUser(username, password, name, phone, email, address, tableName) {
-  //  Check if username already exists first
-  const checkSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE Username = ?`;
+  return new Promise((resolve, reject) => {
+    //  Check if username already exists first
+    const checkSql = `SELECT COUNT(*) AS count FROM ${tableName} WHERE Username = ?`;
 
-  conn.query(checkSql, [username], (checkErr, checkResult) => {
-    if (checkErr) {
-      console.error(`Failed to check username in ${tableName}:`, checkErr.message);
-      return;
-    }
-
-    const count = checkResult[0].count;
-    if (count > 0) {
-      console.warn(` Username '${username}' already exists in ${tableName}. Insert aborted.`);
-      return; //  stop before attempting insert
-    }
-
-    //  Username is available → proceed with insert
-    const insertSql = `
-      INSERT INTO ${tableName} (Username, Password, Name, Phone, Email, Address)
-      VALUES (?, ?, ?, ?, ?, ?)
-    `;
-    const values = [username, password, name, phone, email, address];
-
-    conn.query(insertSql, values, (err, result) => {
-      if (err) {
-        console.error(` Insert into ${tableName} failed:`, err.message);
-      } else {
-        console.log(` Insert into ${tableName} successful!`);
-        console.log(` Inserted ID: ${result.insertId}`);
+    conn.query(checkSql, [username], (checkErr, checkResult) => {
+      if (checkErr) {
+        console.error(`Failed to check username in ${tableName}:`, checkErr.message);
+        reject(checkErr);
+        return;
       }
+
+      const count = checkResult[0].count;
+      if (count > 0) {
+        const error = new Error(`Username '${username}' already exists in ${tableName}`);
+        console.error(error.message);
+        reject(error);
+        return; //  stop before attempting insert
+      }
+
+      //  Username is available → proceed with insert
+      const insertSql = `
+        INSERT INTO ${tableName} (Username, Password, Name, Phone, Email, Address)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `;
+      const values = [username, password, name, phone, email, address];
+
+      conn.query(insertSql, values, (err, result) => {
+        if (err) {
+          console.error(` Insert into ${tableName} failed:`, err.message);
+          reject(err);
+        } else {
+          console.log(` Insert into ${tableName} successful!`);
+          console.log(` Inserted ID: ${result.insertId}`);
+          resolve(result);
+        }
+      });
     });
   });
 }
@@ -141,7 +148,7 @@ function deleteUser(tableName, id) {
 // Specialized CRUD for Customer
 
 function createCustomer(username, password, name, phone, email, address) {
-  createUser(username, password, name, phone, email, address, "Customer");
+  return createUser(username, password, name, phone, email, address, "Customer");
 }
 
 function readCustomer(field, value, targetField = null) {

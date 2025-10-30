@@ -98,9 +98,62 @@
 //   alert('✅ Đã thêm sản phẩm vào giỏ hàng!');
 // }
 
+const vehicleID = localStorage.getItem("selectedVehicle");
+let imagesArray = [];
+
+async function loadImages() {
+  try {
+    const res = await fetch("http://localhost:3000/api/vehicle/images", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ vehicleID: vehicleID })
+    });
+
+    if (!res.ok) {
+      throw new Error('Failed to fetch images');
+    }
+
+    const data = await res.json();
+    if (data.success && data.images) {
+      imagesArray = data.images;
+      displayImages();
+    }
+  } catch (error) {
+    console.error('Error loading images:', error);
+  }
+}
+
+function displayImages() {
+  const imagesContainer = document.querySelector('.images');
+  if (!imagesContainer) return;
+
+  imagesContainer.innerHTML = `
+    <div class="main-image">
+      <img src="${imagesArray[0]?.ImageLink || 'picture/waveA.png'}" alt="Main vehicle image">
+    </div>
+    <div class="image-scroll">
+      ${imagesArray.map((img, index) => `
+        <div class="image-item ${index === 0 ? 'active' : ''}" onclick="selectImage(${index})">
+          <img src="${img.ImageLink}" alt="Vehicle image ${index + 1}">
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectImage(index) {
+  const mainImage = document.querySelector('.main-image img');
+  if (mainImage && imagesArray[index]) {
+    mainImage.src = imagesArray[index].ImageLink;
+    
+    // Update active state
+    document.querySelectorAll('.image-item').forEach((item, i) => {
+      item.classList.toggle('active', i === index);
+    });
+  }
+}
 
 async function loadDetail() {
-  const vehicleID = localStorage.getItem("selectedVehicle");
   // const vehicleID = "Exciter155_GP";
   if (!vehicleID) {
     document.getElementById("vehicle-detail").innerText = "Không tìm thấy sản phẩm!";
@@ -136,7 +189,7 @@ async function loadDetail() {
 }
 
 loadDetail();
-
+loadImages();
 
 function ReturnHome() {
   window.location.href = "main.html";
