@@ -54,7 +54,6 @@ document.querySelectorAll(".brand").forEach(btn => {
         const newArray = vehicle.map((item) => { 
           console.log(item.VehicleID)
           return `
-            <div> 
                   <div>
                       <img src="picture/waveA.png" alt="vehicle picture">
                       <h1> ${item.Name} </h1>
