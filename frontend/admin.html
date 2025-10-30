@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Site</title>
+  <link rel="stylesheet" href="admin.css">
+  <link rel="icon" type="image/png" href="picture/hcmut.png">
+</head>
+<body>
+  <header>
+    <h1>Admin Site</h1>
+  </header>
+
+  <div class="admin-Site">
+    <div class="sidebar">
+      <div class="menu-item" onclick="ShowContent('Revenue-statistics')">Revenue statistics</div>
+      <div class="menu-item" onclick="ShowContent('Stock')">Stock</div>
+      <div class="menu-item" onclick="ShowContent('Manage-customer')">Manage Customer</div>
+      <div class="menu-item" onclick="ShowContent('Complaints')">Complaints</div>
+      <div class="menu-item" onclick="ShowContent('Voucher')">Voucher</div>
+    </div>
+
+    <!-- Revenue-statistics -->
+    <div class="content" id="Revenue-statistics">
+      <h1>Revenue Statistics</h1>
+
+      <div class="filter-section">
+        <input id="order-id" type="text" placeholder="Enter customer's order ID">
+        <label>From:</label>
+        <input type="date" id="from-date">
+        <label>To:</label>
+        <input type="date" id="to-date">
+        <button onclick="searchOrder()">Search</button>
+      </div>
+
+      <table id="order-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer name</th>
+            <th>Date</th>
+            <th>Order value (VNĐ)</th>
+          </tr>
+        </thead>
+        <tbody id="order-list">
+            <tr>
+                <td> 123456</td>
+                <td> Nguyễn Hữu Thiện </td>
+                <td> 30/10/2025</td>
+                <td>30.000.000 </td>
+            </tr>
+                <td> 123457</td>
+                <td> Nguyễn Công Vinh </td>
+                <td> 30/10/2025</td>
+                <td>40.000.000 </td>
+        </tbody>
+      </table>
+
+      <div class="total">
+        Total: <span id="total-revenue">70.000.000</span> VNĐ
+      </div>
+    </div>
+
+    <!--Stock view -->
+    <div class="content" id="Stock">
+      <h1>Stock</h1>
+      <button onclick="toggleAddForm()">+ Add new product</button>
+
+      <!-- Form thêm hàng -->
+      <div class="form-container" id="add-form">
+        <input id="id" type="text" placeholder="ID">
+        <input id="name" type="text" placeholder="Tên hàng hóa">
+        <input id="price" type="number" placeholder="Giá tiền (₫)">
+        <input id="discount" type="number" placeholder="Giảm giá (%)">
+        <input id="brand" type="text" placeholder="Thương hiệu">
+        <input id="category" type="text" placeholder="Phân loại">
+        <input id="quantity" type="number" placeholder="Số lượng">
+        <input id="warehouse" type="text" placeholder="Kho số">
+        <textarea id="description" placeholder="Mô tả"></textarea><br>
+      </div>
+
+      <!-- Bảng danh sách hàng hóa -->
+      <table id="stock-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Product Name</th>
+            <th>Price (₫)</th>
+            <th>Discount (%)</th>
+            <th>Brand</th>
+            <th>Category</th>
+            <th>Quantities</th>
+            <th>#Stock</th>
+            <th>Descriptiton</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="stock-body">
+        <tr>
+            <td>1</td>
+            <td>Honda Civic RS</td>
+            <td>850,000,000</td>
+            <td>Bản RS 2024, động cơ 1.5 Turbo, hộp số CVT</td>
+            <td>5%</td>
+            <td>Honda</td>
+            <td>Sedan</td>
+            <td>8</td>
+            <td>Kho 1</td>
+            <td>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>2</td>
+            <td>Toyota Corolla Altis</td>
+            <td>780,000,000</td>
+            <td>Phiên bản 1.8G CVT 2024, tiết kiệm nhiên liệu</td>
+            <td>7%</td>
+            <td>Toyota</td>
+            <td>Sedan</td>
+            <td>10</td>
+            <td>Kho 2</td>
+            <td>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+            </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+    <!--Observe customer -->
+    <div class="content" id="Manage-customer">
+        <h1>Mange Customer</h1>
+        <label>Search: <input type="text" placeholder="Enter customer id"> </label>
+        <button class="search-input">Search </button>
+        <table id="Customer-table">
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Name</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Create Day</th>
+                    <th>Total Pay</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>12345</td>
+                    <td>Nguyen Huu Thien</td>
+                    <td>123456789</td>
+                    <td>123 street 1</td>
+                    <td>30/10/2025</td>
+                    <td>100.000.000(đ)</td>
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--Complaints -->
+    <div class="content" id="Complaints">
+        <h1>Customer's Complaints</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Complaint ID</th>
+                    <th>Customer Name</th>
+                    <th>Title</th>
+                    <th>Content</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Nguyen Huu Thien</td>
+                    <td>Xe giao trễ hẹn</td>
+                    <td>Tôi đã đặt xe Honda Civic nhưng đến nay 2 tuần vẫn chưa nhận được hàng.</td>
+                    <td>28/10/2025</td>
+                    <td>Pending</td>
+                    <td>
+                    <button class="complete-btn">Complete</button>
+                    <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Nguyen Cong Vinh</td>
+                    <td>Xe bị trầy khi nhận</td>
+                    <td>Xe VinFast VF8 khi giao đến bị trầy nhẹ phần cản trước, đề nghị hỗ trợ đổi xe khác.</td>
+                    <td>29/10/2025</td>
+                    <td>In Review</td>
+                    <td>
+                    <button class="complete-btn">Complete</button>
+                    <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+    <!--Edit voucher -->
+        <div class="content" id="Voucher">
+            <h1>Manage Voucher</h1>
+
+    <!-- Form thêm hoặc chỉnh sửa voucher -->
+        <div class="voucher-form">
+            <h3>Add / Edit Voucher</h3>
+            <form id="voucherForm">
+            <div class="form-row">
+                <label>Voucher Code:</label>
+                <input type="text" id="voucher-code" placeholder="VD: SALE2025" required>
+            </div>
+
+            <div class="form-row">
+                <label>Discount (₫):</label>
+                <input type="number" id="voucher-discount" placeholder="VD: 500000" required>
+            </div>
+
+            <div class="form-row">
+                <label>Start Date:</label>
+                <input type="date" id="voucher-start" required>
+            </div>
+
+            <div class="form-row">
+                <label>End Date:</label>
+                <input type="date" id="voucher-end" required>
+            </div>
+
+            <div class="form-row">
+                <label>Quantity:</label>
+                <input type="number" id="voucher-quantity" placeholder="VD: 100" required>
+            </div>
+
+            <div class="form-row">
+                <label>Minimum Order (₫):</label>
+                <input type="number" id="voucher-min" placeholder="VD: 2000000" required>
+            </div>
+
+            <button type="submit" class="add-btn">Add Voucher</button>
+            </form>
+        </div>
+
+        <!-- Danh sách voucher -->
+        <table id="Voucher-table">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Quantity</th>
+                <th>Min Order</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td>SALE2025</td>
+                <td>500,000₫</td>
+                <td>01/11/2025</td>
+                <td>30/11/2025</td>
+                <td>100</td>
+                <td>2,000,000₫</td>
+                <td>
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>BLACKFRIDAY</td>
+                <td>1,000,000₫</td>
+                <td>25/11/2025</td>
+                <td>28/11/2025</td>
+                <td>50</td>
+                <td>5,000,000₫</td>
+                <td>
+                <button class="edit-btn">Edit</button>
+                <button class="delete-btn">Delete</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
