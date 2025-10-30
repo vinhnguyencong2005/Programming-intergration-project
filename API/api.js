@@ -1,8 +1,9 @@
-
 import { readCustomer } from "../Jsproject/usermodel.js";
 import { readVehicle } from "../Jsproject/vehiclemodel.js";
 import { createCartItem } from "../Jsproject/cartItemmodel.js"; 
 import { readCartItem } from "../Jsproject/cartItemmodel.js";
+import { createCustomer } from "../Jsproject/usermodel.js";
+import { readImages } from "../Jsproject/imagemodel.js"
 import express from "express";
 import cors from "cors";
 
@@ -47,6 +48,51 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+//API customer register
+app.post("/api/register", async (req, res) => {
+  // Validate incoming fields
+  const { username, password, name, phone, email, address } = req.body;
+  if (!username || !password || !name || !phone || !email || !address) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
+
+  try {
+    await createCustomer(username, password, name, phone, email, address);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    // Handle duplicate username (our createUser rejects with message)
+    if (err.message && err.message.includes('already exists')) {
+      return res.status(409).json({ success: false, message: 'Username already exists' });
+    }
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+//API lấy ảnh xe theo VehicleID
+app.post("/api/vehicle/images", async (req, res) => {
+  const { vehicleID } = req.body;
+  try {
+    const images = await readImages("VehicleID", vehicleID);
+    res.json({ success: true, images });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+//API lấy ảnh đầu tiên của xe theo VehicleID
+app.post("/api/vehicle/first_images", async (req, res) => {
+  const { vehicleID } = req.body;
+  try {
+    // Get the first image (priority order) for the vehicle
+    const images = await readImages("VehicleID", vehicleID);
+    const firstImage = images.length > 0 ? images[0].ImageLink : null;
+    res.json({ success: true, imageUrl: firstImage });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 // API get vehicle
 app.post("/api/vehicle", async (req, res) => {
