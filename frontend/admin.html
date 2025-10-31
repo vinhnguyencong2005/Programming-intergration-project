@@ -41,6 +41,7 @@
             <th>Customer name</th>
             <th>Date</th>
             <th>Order value (VNĐ)</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="order-list">
@@ -49,11 +50,17 @@
                 <td> Nguyễn Hữu Thiện </td>
                 <td> 30/10/2025</td>
                 <td>30.000.000 </td>
+                <td>
+                  <button class="view-btn">View</button>
+                </td>
             </tr>
                 <td> 123457</td>
                 <td> Nguyễn Công Vinh </td>
                 <td> 30/10/2025</td>
                 <td>40.000.000 </td>
+                <td>
+                  <button class="view-btn">View</button>
+                </td>
         </tbody>
       </table>
 
@@ -65,20 +72,27 @@
     <!--Stock view -->
     <div class="content" id="Stock">
       <h1>Stock</h1>
-      <button onclick="toggleAddForm()">+ Add new product</button>
+      <button onclick="toggleAddForm()" class="add-product-btn">+ Add new products</button>
 
       <!-- Form thêm hàng -->
       <div class="form-container" id="add-form">
         <input id="id" type="text" placeholder="ID">
-        <input id="name" type="text" placeholder="Tên hàng hóa">
-        <input id="price" type="number" placeholder="Giá tiền (₫)">
-        <input id="discount" type="number" placeholder="Giảm giá (%)">
-        <input id="brand" type="text" placeholder="Thương hiệu">
-        <input id="category" type="text" placeholder="Phân loại">
-        <input id="quantity" type="number" placeholder="Số lượng">
-        <input id="warehouse" type="text" placeholder="Kho số">
-        <textarea id="description" placeholder="Mô tả"></textarea><br>
+        <input id="name" type="text" placeholder="Product Name">
+        <input id="price" type="number" placeholder="Price (₫)">
+        <input id="discount" type="number" placeholder="Discount (%)">
+        <input id="brand" type="text" placeholder="Brand">
+        <input id="category" type="text" placeholder="Category">
+        <input id="quantity" type="number" placeholder="Quantities">
+        <input id="warehouse" type="text" placeholder="Stock Number">
+        <div id="url-image">
+          <input type="text" placeholder="Enter the url of product's image">
+          <button class="add-img-btn" onclick="NewURL()">Add another image</button>
+        </div>
+        <textarea id="description" placeholder="Description"></textarea><br>
+        <button class="add-btn" onclick="Add_new_prod()">Add</button>
       </div>
+
+
 
       <!-- Bảng danh sách hàng hóa -->
       <table id="stock-table">
