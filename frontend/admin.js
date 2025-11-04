@@ -78,3 +78,41 @@ function NewURL() {
   // Thêm vào div trước nút Add another image
   url_class.insertBefore(newInput, url_class.querySelector(".add-img-btn"));
 }
+
+async function loadVehicles() {
+  try {
+    const response = await fetch("http://localhost:3000/api/vehicle");
+    const data = await response.json();
+
+    if (data.success) {
+        const stockTable = document.getElementById("stock-body");
+        let count = 1;
+        const stockItemArray = data.vehicles.map((item) => {
+            return `
+                <tr>
+                    <td>${count++}</td>
+                    <td>${item.Name}</td>
+                    <td>${item.Price.toLocaleString()}</td>
+                    <td>${item.Discount}</td>
+                    <td>${item.Brand}</td>
+                    <td>${item.Type}</td>
+                    <td>${item.Stock}</td>
+                    <td>Kho ${item.WarehouseID}</td>
+                    <td>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            `;
+        })
+        const htmls = stockItemArray.join("");
+        stockTable.innerHTML = htmls;
+    } else {
+      console.log("No vehicles found");
+    }
+  } catch (error) {
+    console.error("Error loading vehicles:", error);
+  }
+}
+
+loadVehicles();

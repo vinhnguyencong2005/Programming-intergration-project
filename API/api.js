@@ -21,9 +21,7 @@ app.get("/api/login", async (req, res) => {
   res.send("<h1>Trang API Login!!!!</h1>");
 }) 
 
-app.get("/api/vehicle", async (req, res) => {
-  res.send("<h1>Trang sản phẩm</h1>");
-}) 
+
 
 
 // API login
@@ -103,6 +101,17 @@ app.post("/api/vehicle", async (req, res) => {
       return res.status(401).json({ message: "Vehicle not found" });
     }
     res.json({success: true, vehicles});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// API get all vehicles
+app.get("/api/vehicle", async (req, res) => {
+  try {
+    const vehicles = await readVehicle(); // không truyền gì hết
+    res.json({ success: true, vehicles });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

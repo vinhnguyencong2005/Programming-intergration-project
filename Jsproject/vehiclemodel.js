@@ -77,7 +77,54 @@ function readVehicle(field, value) {
   });
 }*/
 
-function readVehicle(field, value, targetField = null) {
+// function readVehicle(field, value, targetField = null) {
+//   const allowedFields = [
+//     "VehicleID",
+//     "Name",
+//     "Price",
+//     "Summary",
+//     "Rating",
+//     "Discount",
+//     "Slug",
+//     "Brand",
+//     "Stock",
+//     "Type",
+//     "WarehouseID"
+//   ];
+
+//   if (!allowedFields.includes(field)) {
+//     console.error("Invalid field name!");
+//     return Promise.resolve([]);
+//   }
+
+//   const sql = `SELECT * FROM Vehicle WHERE ${field} = ?`;
+
+//   return new Promise((resolve, reject) => {
+//     conn.query(sql, [value], (err, results) => {
+//       if (err) {
+//         console.error("Query failed:", err.message);
+//         reject(err);
+//         return;
+//       }
+
+//       if (results.length > 0) {
+//         if (targetField) {
+//           const values = results
+//             .map(row => row[targetField])
+//             .filter(v => v !== undefined);
+//           resolve(values.length === 1 ? values[0] : values);
+//         } else {
+//           resolve(results);
+//         }
+//       } else {
+//         console.log("No vehicles found.");
+//         resolve([]);
+//       }
+//     });
+//   });
+// }
+
+function readVehicle(field = null, value = null, targetField = null) {
   const allowedFields = [
     "VehicleID",
     "Name",
@@ -92,15 +139,23 @@ function readVehicle(field, value, targetField = null) {
     "WarehouseID"
   ];
 
-  if (!allowedFields.includes(field)) {
-    console.error("Invalid field name!");
-    return Promise.resolve([]);
+  let sql, params;
+
+  if (field && value) {
+    if (!allowedFields.includes(field)) {
+      console.error("Invalid field name!");
+      return Promise.resolve([]);
+    }
+    sql = `SELECT * FROM Vehicle WHERE ${field} = ?`;
+    params = [value];
+  } else {
+    // Nếu không truyền field thì lấy tất cả
+    sql = `SELECT * FROM Vehicle`;
+    params = [];
   }
 
-  const sql = `SELECT * FROM Vehicle WHERE ${field} = ?`;
-
   return new Promise((resolve, reject) => {
-    conn.query(sql, [value], (err, results) => {
+    conn.query(sql, params, (err, results) => {
       if (err) {
         console.error("Query failed:", err.message);
         reject(err);
@@ -123,7 +178,6 @@ function readVehicle(field, value, targetField = null) {
     });
   });
 }
-
 
 
 // UPDATE
