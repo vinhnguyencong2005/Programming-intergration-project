@@ -329,3 +329,95 @@ th {
   transition: 0.2s;
 }
 
+/*Edit form*/
+/* Tổng thể form */
+#edit-form-row {
+  background: #ffffff;
+  border: 2px solid #007bff;
+  border-radius: 10px;
+  padding: 20px 25px;
+  margin-top: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: "Segoe UI", sans-serif;
+
+}
+
+
+/* Từng dòng trong form */
+.edit-form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  gap: 15px;
+}
+
+/* Nhãn */
+.edit-form-row label {
+  width: 160px;
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Ô nhập liệu và textarea */
+.edit-form-row input,
+.edit-form-row textarea {
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.edit-form-row input:focus,
+.edit-form-row textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0,123,255,0.3);
+  outline: none;
+}
+
+/* Textarea riêng: cho cao hơn một chút */
+.edit-form-row textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Nút Save & Close */
+.edit-form-row button {
+  padding: 10px 20px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+/* Nút Save */
+.save-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Nút Close */
+.close-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.close-btn:hover {
+  background-color: #b02a37;
+}
+
+/* Căn giữa hàng nút cuối */
+.edit-form-row:last-child {
+  justify-content: center;
+  gap: 25px;
+  margin-top: 15px;
+}

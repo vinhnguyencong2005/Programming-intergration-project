@@ -1,4 +1,5 @@
 function ShowContent(id) {
+    closeInlineEditForm();
     document.querySelectorAll('.content').forEach(div =>
 
         {div.style.display = "none";}
@@ -77,4 +78,34 @@ function NewURL() {
 
   // Thêm vào div trước nút Add another image
   url_class.insertBefore(newInput, url_class.querySelector(".add-img-btn"));
+}
+
+
+function showInlineEditForm(rowID) {
+ 
+  //Xóa các form hiện có
+  closeInlineEditForm()
+
+  const row = document.getElementById(rowID);
+  if (!row) return;
+
+  // Lấy toàn bộ phần tử form edit
+  const editForms = document.querySelectorAll(".edit-form-row");
+
+  // Chèn từng form vào sau hàng được click
+  for (let i = editForms.length - 1; i >= 0; i--) {
+    const form = editForms[i];
+    row.insertAdjacentElement("afterend", form);
+    form.style.display = "";
+  }
+}
+
+function closeInlineEditForm() {
+  document.querySelectorAll(".edit-form-row").forEach(
+    element => {element.style.display = "none";}
+  );
+
+  document.querySelectorAll(".edit-form-btn").forEach(
+    element => {element.style.display = "none";}
+  );
 }

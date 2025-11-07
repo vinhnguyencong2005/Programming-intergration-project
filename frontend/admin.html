@@ -111,7 +111,7 @@
           </tr>
         </thead>
         <tbody id="stock-body">
-        <tr>
+        <tr id="row-1">
             <td>1</td>
             <td>Honda Civic RS</td>
             <td>850,000,000</td>
@@ -122,13 +122,13 @@
             <td>8</td>
             <td>Kho 1</td>
             <td>
-            <button class="edit-btn">Edit</button>
+            <button class="edit-btn" onclick="showInlineEditForm('row-1')">Edit</button>
             <button class="delete-btn">Delete</button>
             </td>
         </tr>
 
 
-        <tr>
+        <tr id="row-2">
             <td>2</td>
             <td>Toyota Corolla Altis</td>
             <td>780,000,000</td>
@@ -139,13 +139,75 @@
             <td>10</td>
             <td>Kho 2</td>
             <td>
-            <button class="edit-btn">Edit</button>
+            <button class="edit-btn" onclick="showInlineEditForm('row-2')">Edit</button>
             <button class="delete-btn">Delete</button>
             </td>
         </tr>
         </tbody>
       </table>
-    </div>
+
+      <div id="edit-form-row" style="display:none;">
+        
+          <form id="edit-inline-form">
+            <div class="edit-form-row">
+              <label>Vehicle ID</label>
+              <input type="text" id="edit-vehicleid" placeholder="Enter Vehicle ID">
+            </div>
+
+          <div class="edit-form-row">
+            <label>Name</label>
+            <input type="text" id="edit-name" placeholder="Enter vehicle name">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Price</label>
+            <input type="number" id="edit-price" placeholder="Enter price">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Summary</label>
+            <textarea id="edit-summary" placeholder="Enter summary"></textarea>
+          </div>
+
+          <div class="edit-form-row">
+            <label>Rating</label>
+            <input type="number" step="0.1" id="edit-rating" placeholder="Enter rating (0–5)">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Discount</label>
+            <input type="number" step="0.1" id="edit-discount" placeholder="Enter discount %">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Brand</label>
+            <input type="text" id="edit-brand" placeholder="Enter brand name">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Stock</label>
+            <input type="number" id="edit-stock" placeholder="Enter stock quantity">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Type</label>
+            <input type="text" id="edit-type" placeholder="Enter vehicle type">
+          </div>
+
+          <div class="edit-form-row">
+            <label>Warehouse ID</label>
+            <input type="number" id="edit-warehouseid" placeholder="Enter warehouse ID">
+          </div>  
+
+          <div class="edit-form-row">
+            <button type="button" class="save-btn">Save</button>
+            <button type="button" class="close-btn" onclick="closeInlineEditForm()">Close</button>
+          </div>  
+        </form>
+      </div>
+  </div>
+<!--End of div "stock" -->
+
 
 
     <!--Observe customer -->
