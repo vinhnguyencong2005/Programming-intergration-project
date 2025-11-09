@@ -91,6 +91,7 @@ async function loadVehicles() {
             return `
                 <tr>
                     <td>${count++}</td>
+                    <td>${item.VehicleID}</td>
                     <td>${item.Name}</td>
                     <td>${item.Price.toLocaleString()}</td>
                     <td>${item.Discount}</td>
@@ -100,13 +101,14 @@ async function loadVehicles() {
                     <td>Kho ${item.WarehouseID}</td>
                     <td>
                     <button class="edit-btn">Edit</button>
-                    <button class="delete-btn">Delete</button>
+                    <button onclick="deleteVehicle('${item.VehicleID}',this)" class="delete-btn">Delete</button>
                     </td>
                 </tr>
             `;
         })
         const htmls = stockItemArray.join("");
         stockTable.innerHTML = htmls;
+
     } else {
       console.log("No vehicles found");
     }
@@ -116,3 +118,24 @@ async function loadVehicles() {
 }
 
 loadVehicles();
+
+async function deleteVehicle(vehicleID, button) {
+    if (!confirm("Bạn có chắc muốn xóa xe này không?")) return;
+    try {
+    const res = await fetch("http://localhost:3000/api/vehicle/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ vehicleID })
+    });
+        const result = await res.json();
+        if (result.success) {
+            button.parentElement.parentElement.remove();
+            alert("Đã xóa thành công!")
+        } else {
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error("Lỗi khi xóa:", error);
+        alert("Không thể kết nối tới server!");
+    }
+}

@@ -1,5 +1,6 @@
 import { readCustomer } from "../Jsproject/usermodel.js";
 import { readVehicle } from "../Jsproject/vehiclemodel.js";
+import { deleteVehicle } from "../Jsproject/vehiclemodel.js";
 import { createCartItem } from "../Jsproject/cartItemmodel.js"; 
 import { readCartItem } from "../Jsproject/cartItemmodel.js";
 import { createCustomer } from "../Jsproject/usermodel.js";
@@ -20,8 +21,6 @@ app.get("/", (req, res) => {
 app.get("/api/login", async (req, res) => {
   res.send("<h1>Trang API Login!!!!</h1>");
 }) 
-
-
 
 
 // API login
@@ -130,6 +129,18 @@ app.post("/api/vehicle/detail", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+// DELETE vehicle by VehicleID
+app.post("/api/vehicle/delete", async (req, res) => {
+  const vehicleID = req.body;
+  try {
+    const result = await deleteVehicle(vehicleID); 
+    res.json({ success: true, message: "Vehicle deleted successfully" });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
