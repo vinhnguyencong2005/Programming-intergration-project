@@ -5,6 +5,8 @@ import { createCartItem } from "../Jsproject/cartItemmodel.js";
 import { readCartItem } from "../Jsproject/cartItemmodel.js";
 import { createCustomer } from "../Jsproject/usermodel.js";
 import { readImages } from "../Jsproject/imagemodel.js"
+import { readVoucher } from "../Jsproject/vouchermodel.js";
+import { createVoucher } from "../Jsproject/vouchermodel.js";
 import express from "express";
 import cors from "cors";
 
@@ -170,6 +172,43 @@ app.post("/api/cartItem/get", async (req, res) => {
 });
 
 
+//API get customers
+app.get("/api/customers", async (req, res) => {
+  try {
+    const customers = await readCustomer(); 
+    res.json({success: true, customers });
+  } catch (err) {
+    console.error("Error reading customers:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//API get vouchers
+app.get("/api/vouchers", async (req, res) => {
+  try {
+    const vouchers = await readVoucher();
+    res.json({success: true, vouchers });
+  } catch (err) {
+    console.error("Error reading vouchers:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+//API create voucher
+app.post("/api/voucher/create", async (req, res) => {
+  const { code, reduction, startDate, endDate, quantity, conditions } = req.body; 
+  if (!code || !reduction || !startDate || !endDate || !quantity || !conditions) {
+    return res.status(400).json({ success: false, message: "Missing required fields" });
+  }
+  try {
+    await createVoucher(code, reduction, startDate, endDate, quantity, conditions);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 
 app.listen(3000, () => console.log("✅ Server running on http://localhost:3000"));

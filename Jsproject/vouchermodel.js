@@ -45,18 +45,67 @@ function readVoucher(field, value) {
     }
   });
 }*/
+// function readVoucher(field, value, targetField = null) {
+//   const allowedFields = ["Code", "Reduction", "StartDate", "EndDate", "Quantity", "Conditions"];
+
+//   if (!allowedFields.includes(field)) {
+//     console.error("Invalid field name!");
+//     return Promise.resolve([]);
+//   }
+
+//   const sql = `SELECT * FROM Voucher WHERE ${field} = ?`;
+
+//   return new Promise((resolve, reject) => {
+//     conn.query(sql, [value], (err, results) => {
+//       if (err) {
+//         console.error("Query failed:", err.message);
+//         reject(err);
+//         return;
+//       }
+
+//       if (results.length > 0) {
+//         if (targetField) {
+//           const values = results
+//             .map(row => row[targetField])
+//             .filter(v => v !== undefined);
+
+//           if (values.length === 0) {
+//             console.error("Target field not found in results.");
+//             resolve([]);
+//           } else {
+//             resolve(values.length === 1 ? values[0] : values);
+//           }
+//         } else {
+//           resolve(results);
+//         }
+//       } else {
+//         console.log("No vouchers found.");
+//         resolve([]);
+//       }
+//     });
+//   });
+// }
+
 function readVoucher(field, value, targetField = null) {
   const allowedFields = ["Code", "Reduction", "StartDate", "EndDate", "Quantity", "Conditions"];
 
-  if (!allowedFields.includes(field)) {
-    console.error("Invalid field name!");
-    return Promise.resolve([]);
-  }
-
-  const sql = `SELECT * FROM Voucher WHERE ${field} = ?`;
-
   return new Promise((resolve, reject) => {
-    conn.query(sql, [value], (err, results) => {
+    let sql;
+    let params = [];
+
+    if (field && value) {
+      if (!allowedFields.includes(field)) {
+        console.error("Invalid field name!");
+        resolve([]);
+        return;
+      }
+      sql = `SELECT * FROM Voucher WHERE ${field} = ?`;
+      params = [value];
+    } else {
+      sql = `SELECT * FROM Voucher`; // ✅ Không có điều kiện => lấy tất cả
+    }
+
+    conn.query(sql, params, (err, results) => {
       if (err) {
         console.error("Query failed:", err.message);
         reject(err);
@@ -65,21 +114,13 @@ function readVoucher(field, value, targetField = null) {
 
       if (results.length > 0) {
         if (targetField) {
-          const values = results
-            .map(row => row[targetField])
-            .filter(v => v !== undefined);
-
-          if (values.length === 0) {
-            console.error("Target field not found in results.");
-            resolve([]);
-          } else {
-            resolve(values.length === 1 ? values[0] : values);
-          }
+          const values = results.map(r => r[targetField]).filter(v => v !== undefined);
+          resolve(values.length === 1 ? values[0] : values);
         } else {
           resolve(results);
         }
       } else {
-        console.log("No vouchers found.");
+        console.log(`No vouchers found.`);
         resolve([]);
       }
     });

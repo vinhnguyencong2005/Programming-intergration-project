@@ -73,17 +73,59 @@ function readUser(tableName, field, value) {
     }
   });
 }*/
-function readUser(tableName, field, value, targetField = null) {
-  const allowedFields = ["ID", "Username", "Password", "Name", "Phone", "Email", "Address", "CreateDate"];
-  if (!allowedFields.includes(field)) {
-    console.error("Invalid field name!");
-    return Promise.resolve([]);
-  }
+// function readUser(tableName, field, value, targetField = null) {
+//   const allowedFields = ["ID", "Username", "Password", "Name", "Phone", "Email", "Address", "CreateDate"];
+//   if (!allowedFields.includes(field)) {
+//     console.error("Invalid field name!");
+//     return Promise.resolve([]);
+//   }
 
-  const sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
+//   const sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
+//   params = [value];
+
+//   return new Promise((resolve, reject) => {
+//     conn.query(sql, [value], (err, results) => {
+//       if (err) {
+//         console.error("Query failed:", err.message);
+//         reject(err);
+//         return;
+//       }
+
+//       if (results.length > 0) {
+//         if (targetField) {
+//           const values = results.map(r => r[targetField]).filter(v => v !== undefined);
+//           resolve(values.length === 1 ? values[0] : values);
+//         } else {
+//           resolve(results);
+//         }
+//       } else {
+//         console.log(`No user found in ${tableName}`);
+//         resolve([]);
+//       }
+//     });
+//   });
+// }
+
+function readUser(tableName, field = null, value = null, targetField = null) {
+  const allowedFields = ["ID", "Username", "Password", "Name", "Phone", "Email", "Address", "CreateDate"];
 
   return new Promise((resolve, reject) => {
-    conn.query(sql, [value], (err, results) => {
+    let sql;
+    let params = [];
+
+    if (field && value) {
+      if (!allowedFields.includes(field)) {
+        console.error("Invalid field name!");
+        resolve([]);
+        return;
+      }
+      sql = `SELECT * FROM ${tableName} WHERE ${field} = ?`;
+      params = [value];
+    } else {
+      sql = `SELECT * FROM ${tableName}`; // ✅ Không có điều kiện => lấy tất cả
+    }
+
+    conn.query(sql, params, (err, results) => {
       if (err) {
         console.error("Query failed:", err.message);
         reject(err);
@@ -104,6 +146,7 @@ function readUser(tableName, field, value, targetField = null) {
     });
   });
 }
+
 
 // UPDATE
 function updateUser(tableName, id, updates) {

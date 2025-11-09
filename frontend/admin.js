@@ -106,7 +106,7 @@ async function loadVehicles() {
                 </tr>
             `;
         })
-        const htmls = stockItemArray.join("");
+        let htmls = stockItemArray.join("");
         stockTable.innerHTML = htmls;
 
     } else {
@@ -139,3 +139,104 @@ async function deleteVehicle(vehicleID, button) {
         alert("Không thể kết nối tới server!");
     }
 }
+
+async function loadCustomers() {
+  try {
+    const response = await fetch("http://localhost:3000/api/customers");
+    const data = await response.json();
+
+    if (data.success) {
+        const customerTable = document.getElementById("customer-body");
+        const customerArray = data.customers.map((item) => {
+            return `
+                <tr>
+                    <td>${item.ID}</td>
+                    <td>${item.Name}</td>
+                    <td>${item.Phone}</td>
+                    <td>${item.Address}</td>
+                    <td>${item.CreateDate}</td>
+                    <td> -- </td>
+                    <td>
+                        <button class="edit-btn">Edit</button>
+                        <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            `;
+        })
+        let htmls = customerArray.join("");
+        customerTable.innerHTML = htmls;
+
+    } else {
+      console.log("No customers found");
+    }
+  } catch (error) {
+    console.error("Error loading customers:", error);
+  }
+}
+
+loadCustomers();
+
+
+async function loadVoucher() {
+  try {
+    const response = await fetch("http://localhost:3000/api/vouchers");
+    const data = await response.json();
+
+    if (data.success) {
+        const voucherTable = document.getElementById("voucher-body");
+        const voucherArray = data.vouchers.map((item) => {
+            return `
+                <tr>
+                    <td>${item.Code}</td>
+                    <td>${item.Reduction.toLocaleString()}</td>
+                    <td>${item.StartDate}</td>
+                    <td>${item.EndDate}</td>
+                    <td>${item.Quantity}</td>
+                    <td>${item.Conditions}</td>
+                    <td>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                    </td>
+                </tr>
+            `;
+        })
+        let htmls = voucherArray.join("");
+        voucherTable.innerHTML = htmls;
+
+    } else {
+      console.log("No vouchers found");
+    }
+  } catch (error) {
+    console.error("Error loading vouchers:", error);
+  }
+}
+
+loadVoucher();
+
+document.querySelector(".voucher-form .add-btn").addEventListener("click", async (event) => {
+    event.preventDefault();
+    const code = document.getElementById("voucher-code").value.trim();
+    const reduction = document.getElementById("voucher-discount").value.trim();
+    const startDate = document.getElementById("voucher-start").value.trim();
+    const endDate = document.getElementById("voucher-end").value.trim();
+    const quantity = document.getElementById("voucher-quantity").value.trim();
+    const conditions = document.getElementById("voucher-min").value.trim();
+    console.log(code, reduction, startDate, endDate, quantity, conditions);
+    try {
+    const response = await fetch("http://localhost:3000/api/voucher/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code, reduction, startDate, endDate,  quantity, conditions })
+    });
+        const result = await response.json();
+        if (result.success) {
+            alert("Voucher created successfully!");
+            loadVoucher(); // Reload voucher list
+        } else {
+            alert("Failed to create voucher: " + result.message);
+        }
+    } catch (error) {
+        console.error("Error creating voucher:", error);
+        alert("Could not connect to server!");
+    }
+});
