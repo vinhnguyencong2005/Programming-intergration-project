@@ -236,28 +236,43 @@ async function loadCartItems() {
 
     // Enrich cart items with vehicle details. Prefer server-provided fields (if API merged them).
     const enriched = await Promise.all(cartItems.map(async (item) => {
-      // If API already returned vehicle data, use it
-      if (item.vehicleName || item.vehiclePrice) {
-        return {
-          ...item,
-          vehicleName: item.vehicleName || item.Name,
-          vehiclePrice: item.vehiclePrice || item.Price,
-          vehicleImage: item.vehicleImage || item.Image || 'picture/waveA.png',
-          vehicleStock: item.vehicleStock || item.Stock
-        };
-      }
-
-      // Otherwise fetch details per-item
+      // Fetch vehicle details and first image
       try {
-        const vehicle = await loadVehicleDetails(item.VehicleID);
+        const vehicleRes = await fetch("http://localhost:3000/api/vehicle/detail", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ vehicleID: item.VehicleID })
+        });
+        const vehicleData = await vehicleRes.json();
+        
+        let vehicleImage = 'picture/waveA.png';
+        
+        // Fetch first image using the API
+        try {
+          const imageRes = await fetch("http://localhost:3000/api/vehicle/first_images", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ vehicleID: item.VehicleID })
+          });
+          const imageData = await imageRes.json();
+          if (imageData.success && imageData.imageUrl) {
+            vehicleImage = imageData.imageUrl;
+          }
+        } catch (imageError) {
+          console.error('Error fetching first image:', imageError);
+        }
+
+        const vehicle = vehicleData.vehicle || {};
+        
         return {
           ...item,
-          vehicleName: vehicle?.Name,
-          vehiclePrice: vehicle?.Price || item.Price,
-          vehicleImage: vehicle?.Image || 'picture/waveA.png',
-          vehicleStock: vehicle?.Stock
+          vehicleName: vehicle?.Name || 'Unknown Vehicle',
+          vehiclePrice: vehicle?.Price || item.Price || 0,
+          vehicleImage: vehicleImage,
+          vehicleStock: vehicle?.Stock || 'N/A'
         };
       } catch (e) {
+        console.error('Error enriching cart item:', e);
         return {
           ...item,
           vehicleName: 'Unknown Vehicle',
