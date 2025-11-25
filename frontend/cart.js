@@ -120,49 +120,170 @@
 // // ------------------- QR CODE + TIMER -------------------
 // let countdownInterval;
 // let remainingTime = 600; // 10 phút = 600 giây
+const bankCode = 'VCB';
+const accountNumber = '9946311901';
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   const checkoutBtn = document.querySelector(".checkout");
-//   if (!checkoutBtn) return;
+let appliedVoucherCode = null; // Store applied voucher code
 
-//   checkoutBtn.addEventListener("click", function () {
-//     const modal = document.getElementById("qrModal");
-//     modal.style.display = "flex";
+const applyButton = document.getElementById("applybutton");
 
-//     clearInterval(countdownInterval);
-//     remainingTime = 600;
-//     document.getElementById("qrcode").innerHTML = "";
+document.addEventListener("DOMContentLoaded", () => {
+  const checkoutBtn = document.querySelector(".checkout");
+  if (!checkoutBtn) return;
 
-//     const paymentData = "Thanh toán đơn hàng #DH001 - STK: 123456789 - Ngân hàng ACB";
+  checkoutBtn.addEventListener("click", async function () {
+    // Get all cart items
+    const items = document.querySelectorAll('.item');
+    if (items.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
 
-//     setTimeout(() => {
-//       new QRCode(document.getElementById("qrcode"), {
-//         text: paymentData,
-//         width: 200,
-//         height: 200,
-//       });
-//     }, 100);
+    // Prepare cart items data
+    const cartItems = Array.from(items).map(item => {
+      const cartItemID = item.dataset.cartItemId;
+      const priceDiv = item.querySelector('.price');
+      const countDiv = item.querySelector('.count');
+      const vehicleID = item.querySelector('.item-meta').textContent.replace('ID: ', '').trim();
+      
+      return {
+        CartItemID: cartItemID,
+        VehicleID: vehicleID,
+        Quantity: Number(countDiv.textContent) || 1,
+        Price: Number(priceDiv.dataset.unit) || 0,
+        Discount: 0
+      };
+    });
 
-//     startCountdown();
-//   });
-// });
+    // Get customer ID
+    const customerID = localStorage.getItem("currentUserID");
+    if (!customerID) {
+      alert("Please login to place an order!");
+      return;
+    }
 
-// function startCountdown() {
-//   const timerDisplay = document.getElementById("timer");
-//   updateTimerDisplay(timerDisplay);
+    // Get totals
+    const tempoPrice = parsePrice(document.querySelector('.tempo-price').textContent);
+    const grandTotal = parsePrice(document.querySelector('.total_price').textContent);
+    
+    // Get voucher code if applied
+    const voucherCode = appliedVoucherCode;
 
-//   countdownInterval = setInterval(() => {
-//     remainingTime--;
-//     updateTimerDisplay(timerDisplay);
+    try {
+      // Create order
+      const response = await fetch("http://localhost:3000/api/order/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerID: customerID,
+          total: tempoPrice,
+          grandTotal: grandTotal,
+          cartItems: cartItems,
+          voucherCode: voucherCode
+        })
+      });
 
-//     if (remainingTime <= 0) {
-//       clearInterval(countdownInterval);
-//       document.getElementById("timer").textContent = "⏰ Hết thời gian quét QR!";
-//       setTimeout(closeQR, 2000);
-//     }
-//   }, 1000);
-// }
+      const data = await response.json();
+      if (!data.success) {
+        alert("Failed to create order: " + data.message);
+        return;
+      }
 
+      console.log(`✅ Order created successfully! Order ID: ${data.orderID}`);
+      console.log(`Total: ₫${formatPrice(tempoPrice)}`);
+      console.log(`Grand Total: ₫${formatPrice(grandTotal)}`);
+      if (voucherCode) {
+        console.log(`Voucher applied: ${voucherCode}`);
+      }
+
+      // Show QR code
+      const amount = grandTotal;
+      const message = `${data.orderID}`;
+      const modal = document.getElementById("qrModal");
+      modal.style.display = "flex";
+      clearInterval(countdownInterval);
+      remainingTime = 600;
+      document.getElementById("qrcode").innerHTML = `<img src="https://img.vietqr.io/image/${bankCode}-${accountNumber}-compact2.png?amount=${amount}&addInfo=${message}" width="400" height="auto" />`;
+      
+      startCountdown();
+    } catch (err) {
+      console.error("Error creating order:", err);
+      alert("Failed to create order. Please try again.");
+    }
+  });
+});
+
+function startCountdown() {
+  const timerDisplay = document.getElementById("timer");
+  updateTimerDisplay(timerDisplay);
+  countdownInterval = setInterval(() => {
+    remainingTime--;
+    updateTimerDisplay(timerDisplay);
+
+    if (remainingTime <= 0) {
+      clearInterval(countdownInterval);
+      document.getElementById("timer").textContent = "⏰ Hết thời gian quét QR!";
+      setTimeout(closeQR, 2000);
+    }
+  }, 1000);
+}
+
+async function applyVoucher() {
+  const code = document.getElementById("couponCode").value.trim();
+  if (!code) {
+    alert("Please enter a voucher code.");
+    return;
+  }
+  try {
+    const response = await fetch("http://localhost:3000/api/voucher/read", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: code })
+    });
+    const data = await response.json();
+    
+    if (data.success && data.vouchers && data.vouchers.length > 0) {
+      const voucher = data.vouchers[0];
+      const reduction = voucher.Reduction;
+      const conditions = voucher.Conditions;
+      
+      // Get current total price
+      const currentTotal = parsePrice(document.querySelector('.total_price').textContent);
+      
+      // Check if order meets minimum conditions
+      if (currentTotal < conditions) {
+        alert(`This voucher requires a minimum order of ₫${formatPrice(conditions)}. Your current total is ₫${formatPrice(currentTotal)}.`);
+        return;
+      }
+      
+      // Apply discount
+      const discountAmount = reduction;
+      const newTotal = currentTotal - discountAmount;
+      
+      // Update display
+      const discountLine = document.querySelector('.discount-line');
+      const discountAmountSpan = document.querySelector('.discount-amount');
+      
+      if (discountLine && discountAmountSpan) {
+        discountLine.style.display = 'flex';
+        discountAmountSpan.textContent = `-₫${formatPrice(discountAmount)}`;
+      }
+      
+      document.querySelector('.total_price').textContent = `₫${formatPrice(newTotal)}`;
+      
+      // Store the applied voucher code
+      appliedVoucherCode = code;
+      
+      alert(`Voucher applied! You saved ₫${formatPrice(discountAmount)}`);
+      console.log(`Voucher applied! Reduction: ₫${formatPrice(reduction)}`);
+    } else {
+      alert("Invalid voucher code or voucher not found.");
+    }
+  } catch (error) {
+    console.error("Error applying voucher:", error);
+    alert("Failed to apply voucher. Please try again.");
+  }
+}
 // function updateTimerDisplay(el) {
 //   if (!el) return;
 //   const minutes = Math.floor(remainingTime / 60);
@@ -175,8 +296,6 @@
 //   const modal = document.getElementById("qrModal");
 //   if (modal) modal.style.display = "none";
 // }
-
-
 
 async function loadVehicleDetails(vehicleID) {
   const res = await fetch("http://localhost:3000/api/vehicle/detail", {
@@ -289,7 +408,7 @@ async function loadCartItems() {
       const totalPrice = price * quantity;
 
       return `
-        <div class="item"> 
+        <div class="item" data-cart-item-id="${item.CartItemID}"> 
           <div class="thumb">
             <img src="${item.vehicleImage || 'picture/waveA.png'}" alt="${item.vehicleName || 'Vehicle'}">
           </div>
@@ -320,6 +439,10 @@ async function loadCartItems() {
 
 
 }
+
+// document.querySelector('checkout')?.addEventListener('click', () => {
+  
+
 loadCartItems();
 
 
@@ -342,11 +465,8 @@ loadCartItems();
 
 
 
-
-
-
 // ===================== HÀM THAY ĐỔI SỐ LƯỢNG =====================
-function ChangeQuantity(button, delta) {
+async function ChangeQuantity(button, delta) {
   const countDiv = button.parentElement.querySelector('.count');
   let current = Number(countDiv.textContent) || 0;
   const item = button.closest('.item');
@@ -379,6 +499,32 @@ function ChangeQuantity(button, delta) {
 
   // Cập nhật lại hiển thị
   countDiv.textContent = current;
+
+  // Get CartItemID from data attribute (we'll need to add this when creating items)
+  const cartItemID = item.dataset.cartItemId;
+  
+  // Cập nhật database
+  if (cartItemID) {
+    try {
+      const response = await fetch("http://localhost:3000/api/cartItem/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItemID: cartItemID, quantity: current })
+      });
+      
+      const data = await response.json();
+      if (!data.success) {
+        console.error("Failed to update cart item:", data.message);
+        alert("Failed to update quantity. Please try again.");
+        return;
+      }
+      console.log("Cart item updated successfully in database");
+    } catch (err) {
+      console.error("Error updating cart item:", err);
+      alert("Failed to update quantity. Please try again.");
+      return;
+    }
+  }
 
   // Cập nhật tổng số sản phẩm và giá
   updateTotalProduct();
@@ -416,10 +562,23 @@ function updateEachPrice() {
   });
 }
 
+// Helper function to parse Vietnamese formatted price
+function parsePrice(priceText) {
+  if (!priceText) return 0;
+  // Remove currency symbol and dots, then convert to number
+  return Number(priceText.replace(/[₫,.]/g, '')) || 0;
+}
+
+// Format number to Vietnamese locale with dots
+function formatPrice(number) {
+  return number.toLocaleString('vi-VN');
+}
+
 // ===================== TÍNH TỔNG GIÁ =====================
 function total_price() {
   const items = document.querySelectorAll('.item');
   let total_price_value = 0;
+  
   items.forEach(item => {
     const count = Number(item.querySelector('.count')?.textContent) || 0;
     const priceDiv = item.querySelector('.price');
@@ -429,8 +588,12 @@ function total_price() {
 
   const total_div = document.querySelector('.total_price');
   const temp_price = document.querySelector('.tempo-price');
-  if (total_div) total_div.textContent = `₫${total_price_value.toLocaleString()}`;
-  if (temp_price) temp_price.textContent = `₫${total_price_value.toLocaleString()}`;
+  
+  const formattedPrice = formatPrice(total_price_value);
+  if (total_div) total_div.textContent = `₫${formattedPrice}`;
+  if (temp_price) temp_price.textContent = `₫${formattedPrice}`;
+  
+  console.log('Total price updated:', total_price_value, `₫${formattedPrice}`);
 }
 
 // ===================== QR CODE THANH TOÁN =====================
@@ -521,10 +684,44 @@ window.onload = function () {
 };
 
 // ===================== XÓA SẢN PHẨM =====================
-function removeItem(index) {
+async function removeItem(index) {
+  const items = document.querySelectorAll('.item');
+  const item = items[index];
+  const cartItemID = item?.dataset.cartItemId;
+
+  // Xác nhận xóa
+  if (!confirm("Are you sure you want to remove this item from your cart?")) {
+    return;
+  }
+
+  // Xóa từ database nếu có cartItemID
+  if (cartItemID) {
+    try {
+      const response = await fetch("http://localhost:3000/api/cartItem/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cartItemID: cartItemID })
+      });
+      
+      const data = await response.json();
+      if (!data.success) {
+        console.error("Failed to delete cart item:", data.message);
+        alert("Failed to remove item. Please try again.");
+        return;
+      }
+      console.log("Cart item deleted successfully from database");
+    } catch (err) {
+      console.error("Error deleting cart item:", err);
+      alert("Failed to remove item. Please try again.");
+      return;
+    }
+  }
+
+  // Xóa từ localStorage (nếu có)
   let cart = JSON.parse(localStorage.getItem('cart')) || [];
   cart.splice(index, 1);
   localStorage.setItem('cart', JSON.stringify(cart));
+  
+  // Reload trang để cập nhật
   window.location.reload();
 }
-

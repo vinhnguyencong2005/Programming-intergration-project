@@ -4,41 +4,51 @@ import { readVoucher } from "./vouchermodel.js";
 
 // CREATE
 function createApply(orderID, voucherCode) {
-  // Check if order exists
-  const checkOrderSql = `SELECT * FROM Orders WHERE OrderID = ?`;
-  conn.query(checkOrderSql, [orderID], (err, orderResults) => {
-    if (err) {
-      console.error("Error checking order:", err.message);
-      return;
-    }
-    if (orderResults.length === 0) {
-      console.error(`Order with ID ${orderID} does not exist.`);
-      return;
-    }
-
-    // Check if voucher exists
-    const checkVoucherSql = `SELECT * FROM Voucher WHERE Code = ?`;
-    conn.query(checkVoucherSql, [voucherCode], (err, voucherResults) => {
+  return new Promise((resolve, reject) => {
+    // Check if order exists
+    const checkOrderSql = `SELECT * FROM Orders WHERE OrderID = ?`;
+    conn.query(checkOrderSql, [orderID], (err, orderResults) => {
       if (err) {
-        console.error("Error checking voucher:", err.message);
+        console.error("Error checking order:", err.message);
+        reject(err);
         return;
       }
-      if (voucherResults.length === 0) {
-        console.error(`Voucher with code ${voucherCode} does not exist.`);
+      if (orderResults.length === 0) {
+        const error = new Error(`Order with ID ${orderID} does not exist.`);
+        console.error(error.message);
+        reject(error);
         return;
       }
 
-      // If both exist → insert
-      const sql = `
-        INSERT INTO Apply (OrderID, VoucherCode)
-        VALUES (?, ?)
-      `;
-      conn.query(sql, [orderID, voucherCode], (err, result) => {
+      // Check if voucher exists
+      const checkVoucherSql = `SELECT * FROM Voucher WHERE Code = ?`;
+      conn.query(checkVoucherSql, [voucherCode], (err, voucherResults) => {
         if (err) {
-          console.error("Insert into Apply failed:", err.message);
-        } else {
-          console.log(`Voucher ${voucherCode} applied successfully to Order ${orderID}.`);
+          console.error("Error checking voucher:", err.message);
+          reject(err);
+          return;
         }
+        if (voucherResults.length === 0) {
+          const error = new Error(`Voucher with code ${voucherCode} does not exist.`);
+          console.error(error.message);
+          reject(error);
+          return;
+        }
+
+        // If both exist → insert
+        const sql = `
+          INSERT INTO Apply (OrderID, VoucherCode)
+          VALUES (?, ?)
+        `;
+        conn.query(sql, [orderID, voucherCode], (err, result) => {
+          if (err) {
+            console.error("Insert into Apply failed:", err.message);
+            reject(err);
+          } else {
+            console.log(`Voucher ${voucherCode} applied successfully to Order ${orderID}.`);
+            resolve(result);
+          }
+        });
       });
     });
   });

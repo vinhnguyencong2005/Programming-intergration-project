@@ -4,7 +4,7 @@ import mysql from "mysql2";
 // Database configuration
 const db_server = "localhost";
 const db_username = "root";
-const db_password = "Tin201005"
+const db_password = "23202069Vvv#";
 const db_name = "dath_db";
 
 // Create MySQL connection

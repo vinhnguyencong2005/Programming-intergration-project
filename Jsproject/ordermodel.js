@@ -3,31 +3,38 @@ import { readCustomer } from "./usermodel.js";
 
 // CREATE
 function createOrder(status, total, grandTotal, customerID) {
-  // Check if the customer exists first
-  const checkSql = `SELECT * FROM Customer WHERE ID = ?`;
-  conn.query(checkSql, [customerID], (err, results) => {
-    if (err) {
-      console.error("Error checking customer:", err.message);
-      return;
-    }
-    if (results.length === 0) {
-      console.error(`Customer with ID ${customerID} does not exist.`);
-      return;
-    }
-
-    // If customer exists → proceed with creating order
-    const sql = `
-      INSERT INTO Orders (Status, Total, GrandTotal, CustomerID)
-      VALUES (?, ?, ?, ?)
-    `;
-    const values = [status, total, grandTotal, customerID];
-
-    conn.query(sql, values, (err, result) => {
+  return new Promise((resolve, reject) => {
+    // Check if the customer exists first
+    const checkSql = `SELECT * FROM Customer WHERE ID = ?`;
+    conn.query(checkSql, [customerID], (err, results) => {
       if (err) {
-        console.error("Insert into Orders failed:", err.message);
-      } else {
-        console.log(`Order created successfully for Customer ${customerID}`);
+        console.error("Error checking customer:", err.message);
+        reject(err);
+        return;
       }
+      if (results.length === 0) {
+        const error = new Error(`Customer with ID ${customerID} does not exist.`);
+        console.error(error.message);
+        reject(error);
+        return;
+      }
+
+      // If customer exists → proceed with creating order
+      const sql = `
+        INSERT INTO Orders (Status, Total, GrandTotal, CustomerID)
+        VALUES (?, ?, ?, ?)
+      `;
+      const values = [status, total, grandTotal, customerID];
+
+      conn.query(sql, values, (err, result) => {
+        if (err) {
+          console.error("Insert into Orders failed:", err.message);
+          reject(err);
+        } else {
+          console.log(`Order created successfully for Customer ${customerID}`);
+          resolve({ orderID: result.insertId, ...result });
+        }
+      });
     });
   });
 }
@@ -78,10 +85,9 @@ function readOrder(field, value, targetField = null) {
       }
 
       if (results.length > 0) {
-        const order = results[0];
-
-        // If user asks for a specific field, return only that field’s value
+        // If targetField is specified, return just that field from first result
         if (targetField) {
+          const order = results[0];
           if (targetField in order) {
             resolve(order[targetField]);
           } else {
@@ -89,11 +95,11 @@ function readOrder(field, value, targetField = null) {
             resolve(null);
           }
         } else {
-          // Otherwise, return the full order object
-          resolve(order);
+          // Return all matching orders (array)
+          resolve(results);
         }
       } else {
-        resolve(null);
+        resolve([]);
       }
     });
   });

@@ -136,21 +136,26 @@ function updateVoucher(code, updates) {
 
   if (keys.length === 0) {
     console.error("No valid fields to update.");
-    return;
+    return Promise.reject(new Error("No valid fields to update."));
   }
 
   const setClause = keys.map(k => `${k} = ?`).join(", ");
   const values = keys.map(k => updates[k]);
   const sql = `UPDATE Voucher SET ${setClause} WHERE Code = ?`;
 
-  conn.query(sql, [...values, code], (err, result) => {
-    if (err) {
-      console.error("Update failed:", err.message);
-    } else if (result.affectedRows === 0) {
-      console.log(`No voucher found with Code '${code}'.`);
-    } else {
-      console.log(`Voucher '${code}' updated successfully.`);
-    }
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [...values, code], (err, result) => {
+      if (err) {
+        console.error("Update failed:", err.message);
+        reject(err);
+      } else if (result.affectedRows === 0) {
+        console.log(`No voucher found with Code '${code}'.`);
+        reject(new Error(`No voucher found with Code '${code}'.`));
+      } else {
+        console.log(`Voucher '${code}' updated successfully.`);
+        resolve(result);
+      }
+    });
   });
 }
 

@@ -198,21 +198,27 @@ function updateVehicle(vehicleID, updates) {
   const keys = Object.keys(updates).filter(k => allowedFields.includes(k));
   if (keys.length === 0) {
     console.error("No valid fields to update.");
-    return;
+    return Promise.reject(new Error("No valid fields to update."));
   }
 
   const setClause = keys.map(k => `${k} = ?`).join(", ");
   const values = keys.map(k => updates[k]);
   const sql = `UPDATE Vehicle SET ${setClause} WHERE VehicleID = ?`;
 
-  conn.query(sql, [...values, vehicleID], (err, result) => {
-    if (err) {
-      console.error("Update failed:", err.message);
-    } else if (result.affectedRows === 0) {
-      console.log(`No vehicle found with ID ${vehicleID}`);
-    } else {
-      console.log(` Vehicle ${vehicleID} updated successfully.`);
-    }
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [...values, vehicleID], (err, result) => {
+      if (err) {
+        console.error("Update failed:", err.message);
+        reject(err);
+        reject(err);
+      } else if (result.affectedRows === 0) {
+        console.log(`No vehicle found with ID ${vehicleID}.`);
+        reject(new Error(`No vehicle found with ID ${vehicleID}.`));
+      } else {
+        console.log(`Vehicle ${vehicleID} updated successfully.`);
+        resolve(result);
+      }
+    });
   });
 }
 

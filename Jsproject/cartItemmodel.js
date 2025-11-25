@@ -154,35 +154,45 @@ function updateCartItem(cartItemID, updates) {
 
   if (keys.length === 0) {
     console.error(" No valid fields to update.");
-    return;
+    return Promise.reject(new Error("No valid fields to update."));
   }
 
   const setClause = keys.map((k) => `${k} = ?`).join(", ");
   const values = keys.map((k) => updates[k]);
   const sql = `UPDATE CartItem SET ${setClause} WHERE CartItemID = ?`;
 
-  conn.query(sql, [...values, cartItemID], (err, result) => {
-    if (err) {
-      console.error(" Update failed:", err.message);
-    } else if (result.affectedRows === 0) {
-      console.log(` No cart item found with ID ${cartItemID}`);
-    } else {
-      console.log(` CartItem ${cartItemID} updated successfully.`);
-    }
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [...values, cartItemID], (err, result) => {
+      if (err) {
+        console.error(" Update failed:", err.message);
+        reject(err);
+      } else if (result.affectedRows === 0) {
+        console.log(` No cart item found with ID ${cartItemID}`);
+        reject(new Error(`No cart item found with ID ${cartItemID}`));
+      } else {
+        console.log(` CartItem ${cartItemID} updated successfully.`);
+        resolve(result);
+      }
+    });
   });
 }
 
 // DELETE
 function deleteCartItem(cartItemID) {
   const sql = `DELETE FROM CartItem WHERE CartItemID = ?`;
-  conn.query(sql, [cartItemID], (err, result) => {
-    if (err) {
-      console.error(" Delete failed:", err.message);
-    } else if (result.affectedRows === 0) {
-      console.log(` No cart item found with ID ${cartItemID}`);
-    } else {
-      console.log(` CartItem ${cartItemID} deleted successfully.`);
-    }
+  return new Promise((resolve, reject) => {
+    conn.query(sql, [cartItemID], (err, result) => {
+      if (err) {
+        console.error(" Delete failed:", err.message);
+        reject(err);
+      } else if (result.affectedRows === 0) {
+        console.log(` No cart item found with ID ${cartItemID}`);
+        reject(new Error(`No cart item found with ID ${cartItemID}`));
+      } else {
+        console.log(` CartItem ${cartItemID} deleted successfully.`);
+        resolve(result);
+      }
+    });
   });
 }
 

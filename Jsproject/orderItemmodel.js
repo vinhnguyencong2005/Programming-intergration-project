@@ -4,43 +4,53 @@ import { readVehicle } from "./vehiclemodel.js";
 
 // CREATE
 function createOrderItem(quantity, price, discount, orderID, vehicleID) {
-  // Check if Order exists
-  const checkOrderSql = `SELECT * FROM Orders WHERE OrderID = ?`;
-  conn.query(checkOrderSql, [orderID], (err, orderResults) => {
-    if (err) {
-      console.error("Error checking order:", err.message);
-      return;
-    }
-    if (orderResults.length === 0) {
-      console.error(`Order with ID ${orderID} does not exist.`);
-      return;
-    }
-
-    // Check if Vehicle exists
-    const checkVehicleSql = `SELECT * FROM Vehicle WHERE VehicleID = ?`;
-    conn.query(checkVehicleSql, [vehicleID], (err, vehicleResults) => {
+  return new Promise((resolve, reject) => {
+    // Check if Order exists
+    const checkOrderSql = `SELECT * FROM Orders WHERE OrderID = ?`;
+    conn.query(checkOrderSql, [orderID], (err, orderResults) => {
       if (err) {
-        console.error("Error checking vehicle:", err.message);
+        console.error("Error checking order:", err.message);
+        reject(err);
         return;
       }
-      if (vehicleResults.length === 0) {
-        console.error(`Vehicle with ID ${vehicleID} does not exist.`);
+      if (orderResults.length === 0) {
+        const error = new Error(`Order with ID ${orderID} does not exist.`);
+        console.error(error.message);
+        reject(error);
         return;
       }
 
-      // Insert if both exist
-      const sql = `
-        INSERT INTO OrderItem (Quantity, Price, Discount, OrderID, VehicleID)
-        VALUES (?, ?, ?, ?, ?)
-      `;
-      const values = [quantity, price, discount, orderID, vehicleID];
-
-      conn.query(sql, values, (err, result) => {
+      // Check if Vehicle exists
+      const checkVehicleSql = `SELECT * FROM Vehicle WHERE VehicleID = ?`;
+      conn.query(checkVehicleSql, [vehicleID], (err, vehicleResults) => {
         if (err) {
-          console.error("Insert into OrderItem failed:", err.message);
-        } else {
-          console.log(`OrderItem created successfully for Order ${orderID} and Vehicle ${vehicleID}.`);
+          console.error("Error checking vehicle:", err.message);
+          reject(err);
+          return;
         }
+        if (vehicleResults.length === 0) {
+          const error = new Error(`Vehicle with ID ${vehicleID} does not exist.`);
+          console.error(error.message);
+          reject(error);
+          return;
+        }
+
+        // Insert if both exist
+        const sql = `
+          INSERT INTO OrderItem (Quantity, Price, Discount, OrderID, VehicleID)
+          VALUES (?, ?, ?, ?, ?)
+        `;
+        const values = [quantity, price, discount, orderID, vehicleID];
+
+        conn.query(sql, values, (err, result) => {
+          if (err) {
+            console.error("Insert into OrderItem failed:", err.message);
+            reject(err);
+          } else {
+            console.log(`OrderItem created successfully for Order ${orderID} and Vehicle ${vehicleID}.`);
+            resolve(result);
+          }
+        });
       });
     });
   });

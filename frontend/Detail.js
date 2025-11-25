@@ -188,6 +188,30 @@ async function loadDetail() {
   `;
 }
 
+async function likeButtonInitial() {
+  const likeBtn = document.getElementById("likeBtn");
+  const vehicleID = localStorage.getItem("selectedVehicle");
+  const userID = localStorage.getItem("currentUserID");
+  if (!userID) {
+    return;
+  }
+  const res = await fetch("http://localhost:3000/api/wishlist/read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ customerID: userID, vehicleID: vehicleID })
+  });
+
+  const data = await res.json();
+  if (data.success && data.wishlistItems.length > 0 && data.wishlistItems.some(item => item.VehicleID === vehicleID)) {
+    likeBtn.classList.add("liked");
+    likeBtn.textContent = "💖 Liked";
+  } else {
+    likeBtn.classList.remove("liked");
+    likeBtn.textContent = "❤️ Like";
+  }
+}
+likeButtonInitial();
+
 loadDetail();
 loadImages();
 
@@ -286,14 +310,30 @@ function checkLogin() {
 //     img.src = "picture/waveBlue.png";
 //   }
 // }
-
-
+// Read from wishlist if the vehicle is liked by the user
 // ===================== LIKE BUTTON =====================
-function toggleLike() {
+async function toggleLike() {
   const likeBtn = document.getElementById("likeBtn");
+
+  const vehicleID = localStorage.getItem("selectedVehicle");
+  const userID = localStorage.getItem("currentUserID");
+  if (!userID) {
+    alert("Please log in to like vehicles.");
+    window.location.href = "login.html";
+    return;
+  }
+  const res = await fetch(`http://localhost:3000/api/wishlist/${likeBtn.classList.contains("liked") ? "remove" : "add"}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ customerID: userID, vehicleID: vehicleID })
+  });
+
+  const isLiked = likeBtn.classList.contains("liked");
+  const endpoint = isLiked ? "/api/wishlist/remove" : "/api/wishlist/add";
   likeBtn.classList.toggle("liked");
   likeBtn.textContent = likeBtn.classList.contains("liked") ? "💖 Liked" : "❤️ Like";
 }
+
 
 
 async function addToCart() {
