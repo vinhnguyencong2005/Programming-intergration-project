@@ -1,0 +1,30 @@
+/* Orders page specific styles */
+.table-responsive {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.badge-status {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.status-pending {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.status-processing {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.status-completed {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.status-cancelled {
+    background-color: #dc3545;
+    color: #fff;
+}

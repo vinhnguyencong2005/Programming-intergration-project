@@ -1,0 +1,45 @@
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+require('dotenv').config();
+
+// Import database connection
+const conn = require('./config/db');
+
+// Import routes
+const pageRoutes = require('./routes/pageRoutes');
+const vehicleRoutes = require('./routes/vehicleRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+
+// Khởi tạo Express app
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// ============ ROUTES ============
+// Page routes (render HTML)
+app.use('/', pageRoutes);
+
+// API routes
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/orders', orderRoutes);
+
+// ============ ERROR HANDLING ============
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
+
+// ============ START SERVER ============
+app.listen(PORT, () => {
+  console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+});
+
+module.exports = app;
