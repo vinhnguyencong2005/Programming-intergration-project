@@ -108,7 +108,16 @@
         // Update cart icon link
         const cartIcon = document.getElementById('cartIcon');
         if (cartIcon) {
-            cartIcon.href = '/cart';
+            cartIcon.addEventListener('click', function(e) {
+                const userData = localStorage.getItem('userData');
+                if (!userData) {
+                    e.preventDefault();
+                    alert('Vui lòng đăng nhập để xem giỏ hàng');
+                    window.location.href = '/login';
+                } else {
+                    cartIcon.href = '/cart';
+                }
+            });
         }
     });
 
