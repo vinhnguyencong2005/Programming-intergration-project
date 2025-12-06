@@ -221,9 +221,8 @@ function handleCheckout() {
         return;
     }
 
-    // Navigate to checkout page (will be implemented later)
-    alert("Tính năng thanh toán sẽ được cập nhật sớm!");
-    // window.location.href = "/checkout";
+    // Navigate to checkout page
+    window.location.href = "/checkout";
 }
 
 // Show empty cart

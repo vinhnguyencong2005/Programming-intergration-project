@@ -14,6 +14,9 @@ router.get('/:id', orderController.getOrderById);
 // Tạo order mới
 router.post('/', orderController.createOrder);
 
+// Checkout - Create order from cart
+router.post('/checkout', orderController.checkout);
+
 // Cập nhật order
 router.put('/:id', orderController.updateOrder);
 

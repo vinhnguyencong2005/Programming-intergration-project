@@ -42,4 +42,9 @@ router.get('/cart', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/cart.html'));
 });
 
+// Render trang thanh toán
+router.get('/checkout', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/checkout.html'));
+});
+
 module.exports = router;

@@ -1,4 +1,5 @@
 const orderModel = require('../models/ordermodel');
+const orderItemModel = require('../models/orderItemmodel');
 
 const orderController = {
   // Lấy tất cả orders
@@ -64,6 +65,61 @@ const orderController = {
       res.json({ success: true, message: 'Order deleted successfully' });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  // Checkout - Create order and order items from cart
+  checkout: async (req, res) => {
+    try {
+      const { customerID, status, total, grandTotal, shippingInfo, note, paymentMethod, items } = req.body;
+
+      // Validate required fields
+      if (!customerID || !items || items.length === 0) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Customer ID and items are required' 
+        });
+      }
+
+      // Create order
+      const orderResult = await orderModel.createOrder(
+        status || "Pending",
+        total,
+        grandTotal,
+        customerID
+      );
+
+      const orderID = orderResult.insertId;
+
+      // Create order items
+      for (const item of items) {
+        await orderItemModel.createOrderItem(
+          item.quantity,
+          item.price,
+          item.discount || 0,
+          orderID,
+          item.vehicleID
+        );
+      }
+
+      // Return success with order ID
+      res.json({ 
+        success: true, 
+        message: 'Order placed successfully',
+        orderID: orderID,
+        data: {
+          orderID: orderID,
+          total: total,
+          grandTotal: grandTotal,
+          status: status || "Pending"
+        }
+      });
+    } catch (error) {
+      console.error("Checkout error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: error.message || "Failed to place order" 
+      });
     }
   }
 };
