@@ -212,6 +212,128 @@ const userModel = {
         }
       });
     });
+  },
+
+  // Login administrator with bcrypt
+  loginAdmin: async (username, password) => {
+    const bcrypt = require('bcrypt');
+    return new Promise((resolve, reject) => {
+      const sql = `SELECT ID, Username, Password, Name, Phone, Email, Address FROM Administrator WHERE Username = ?`;
+      
+      conn.query(sql, [username], async (err, results) => {
+        if (err) {
+          console.error('Admin login query failed:', err.message);
+          reject(err);
+          return;
+        }
+
+        if (results.length === 0) {
+          reject(new Error('Invalid username or password'));
+          return;
+        }
+
+        const admin = results[0];
+        
+        // Compare password with hashed password
+        try {
+          const isMatch = await bcrypt.compare(password, admin.Password);
+          
+          if (!isMatch) {
+            reject(new Error('Invalid username or password'));
+            return;
+          }
+
+          // Remove password from response
+          delete admin.Password;
+          
+          console.log(`Admin ${username} logged in successfully`);
+          resolve(admin);
+        } catch (bcryptErr) {
+          console.error('Password comparison failed:', bcryptErr.message);
+          reject(bcryptErr);
+        }
+      });
+    });
+  },
+
+  // Get all customers with their statistics
+  getAllCustomers: () => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT 
+          c.ID,
+          c.Username,
+          c.Name,
+          c.Phone,
+          c.Email,
+          c.Address,
+          c.CreateDate,
+          COUNT(DISTINCT o.OrderID) as totalOrders,
+          COALESCE(SUM(CASE WHEN o.Status = 'Accepted' THEN o.GrandTotal ELSE 0 END), 0) as totalPaid
+        FROM Customer c
+        LEFT JOIN Orders o ON c.ID = o.CustomerID
+        GROUP BY c.ID, c.Username, c.Name, c.Phone, c.Email, c.Address, c.CreateDate
+        ORDER BY totalPaid DESC
+      `;
+      
+      conn.query(sql, (err, results) => {
+        if (err) {
+          console.error('Error getting customers:', err.message);
+          reject(err);
+        } else {
+          console.log(`Retrieved ${results.length} customers`);
+          resolve(results);
+        }
+      });
+    });
+  },
+
+  // Get customer by ID with detailed info
+  getCustomerById: (customerId) => {
+    return new Promise((resolve, reject) => {
+      // Get customer info
+      const customerSql = 'SELECT ID, Username, Name, Phone, Email, Address, CreateDate FROM Customer WHERE ID = ?';
+      
+      conn.query(customerSql, [customerId], (err, customer) => {
+        if (err) {
+          console.error('Error getting customer:', err.message);
+          reject(err);
+          return;
+        }
+        
+        if (customer.length === 0) {
+          console.log(`Customer with ID ${customerId} not found`);
+          resolve(null);
+          return;
+        }
+        
+        // Get customer orders
+        const ordersSql = `
+          SELECT 
+            OrderID,
+            Status,
+            CreateDate,
+            Total,
+            GrandTotal
+          FROM Orders 
+          WHERE CustomerID = ?
+          ORDER BY CreateDate DESC
+        `;
+        
+        conn.query(ordersSql, [customerId], (err, orders) => {
+          if (err) {
+            console.error('Error getting customer orders:', err.message);
+            reject(err);
+          } else {
+            console.log(`Retrieved customer ${customerId} with ${orders.length} orders`);
+            resolve({
+              ...customer[0],
+              orders
+            });
+          }
+        });
+      });
+    });
   }
 };
 

@@ -117,10 +117,13 @@ CREATE TABLE OrderItem (
     Discount FLOAT,
     CreateDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     OrderID INT NOT NULL,
-    VehicleID VARCHAR(20) NOT NULL,
+    VehicleID VARCHAR(20) NULL, -- Allow NULL when vehicle is deleted
+    VehicleName VARCHAR(100) NULL, -- Store vehicle name snapshot
+    VehicleBrand VARCHAR(20) NULL, -- Store brand snapshot
+    VehicleImageUrl VARCHAR(700) NULL, -- Store image URL snapshot
     PRIMARY KEY (OrderItemID),
     FOREIGN KEY (OrderID) REFERENCES Orders(OrderID) ON DELETE CASCADE,
-    FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID) ON DELETE CASCADE
+    FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID) ON DELETE SET NULL -- Set NULL instead of CASCADE
 );
 
 CREATE TABLE Payment (
@@ -216,6 +219,11 @@ INSERT INTO Voucher(Code, Reduction, StartDate, EndDate, Quantity, Conditions) V
 ('BLACKFRI', 1500000, '2025-11-25 00:00:00', '2025-12-02 00:00:00', 150, 10000000),
 ('TET2026', 3000000, '2025-12-15 00:00:00', '2026-02-01 00:00:00', 100, 25000000),
 ('WELCOME', 200000, '2025-11-01 00:00:00', '2026-01-01 00:00:00', 1000, 3000000);
+
+-- Admin accounts (username: admin/admin2, password: admin123)
+INSERT INTO Administrator (Username, Password, Name, Phone, Email, Address) VALUES
+('admin', '$2b$10$uUipKKo4/W6oYgPZLWYS0e3S2kMHtmDkCMwRabM6t9r3d0EeMvhGy', 'Administrator', '0901234567', 'admin@motorbike.com', 'HCM City'),
+('admin2', '$2b$10$.ks/8QFNa8CtVAemyM5jL.G85P.99VvxiJgf8pUlCtsKX2uxXNFVe', 'Admin Manager', '0907654321', 'manager@motorbike.com', 'Hanoi City');
 
 INSERT INTO Report (Information, Title, CustomerID) VALUES
 ('Xe giao chậm hơn dự kiến 3 ngày, mong hỗ trợ kiểm tra lại lịch giao hàng.', 'Phàn nàn giao hàng', 1),

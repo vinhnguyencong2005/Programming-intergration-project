@@ -84,6 +84,38 @@ const authController = {
     }
   },
 
+  // Login admin
+  loginAdmin: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+
+      // Validate required fields
+      if (!username || !password) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'Username and password are required' 
+        });
+      }
+
+      const admin = await userModel.loginAdmin(username, password);
+
+      res.json({ 
+        success: true, 
+        message: 'Admin login successful',
+        data: {
+          ...admin,
+          isAdmin: true
+        }
+      });
+    } catch (error) {
+      if (error.message === 'Invalid username or password') {
+        res.status(401).json({ success: false, message: error.message });
+      } else {
+        res.status(500).json({ success: false, message: error.message });
+      }
+    }
+  },
+
   // Logout
   logout: (req, res) => {
     res.json({ 

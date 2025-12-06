@@ -101,51 +101,113 @@ const vehicleModel = {
 
   // UPDATE
   updateVehicle: (vehicleID, updates) => {
-    const allowedFields = [
-      "Name",
-      "Price",
-      "Summary",
-      "Rating",
-      "Discount",
-      "Slug",
-      "Brand",
-      "Stock",
-      "Type",
-      "WarehouseID"
-    ];
+    return new Promise((resolve, reject) => {
+      const allowedFields = [
+        "Name",
+        "Price",
+        "Summary",
+        "Rating",
+        "Discount",
+        "Slug",
+        "Brand",
+        "Stock",
+        "Type",
+        "WarehouseID"
+      ];
 
-    const keys = Object.keys(updates).filter(k => allowedFields.includes(k));
-    if (keys.length === 0) {
-      console.error("No valid fields to update.");
-      return;
-    }
-
-    const setClause = keys.map(k => `${k} = ?`).join(", ");
-    const values = keys.map(k => updates[k]);
-    const sql = `UPDATE Vehicle SET ${setClause} WHERE VehicleID = ?`;
-
-    conn.query(sql, [...values, vehicleID], (err, result) => {
-      if (err) {
-        console.error("Update failed:", err.message);
-      } else if (result.affectedRows === 0) {
-        console.log(`No vehicle found with ID ${vehicleID}`);
-      } else {
-        console.log(` Vehicle ${vehicleID} updated successfully.`);
+      const keys = Object.keys(updates).filter(k => allowedFields.includes(k));
+      if (keys.length === 0) {
+        console.error("No valid fields to update.");
+        reject(new Error("No valid fields to update"));
+        return;
       }
+
+      // Check if vehicle exists first
+      const checkSql = 'SELECT VehicleID FROM Vehicle WHERE VehicleID = ?';
+      
+      conn.query(checkSql, [vehicleID], (err, results) => {
+        if (err) {
+          console.error('Error checking vehicle:', err.message);
+          reject(err);
+          return;
+        }
+        
+        if (results.length === 0) {
+          console.log(`No vehicle found with ID ${vehicleID}`);
+          resolve(false);
+          return;
+        }
+
+        const setClause = keys.map(k => `${k} = ?`).join(", ");
+        const values = keys.map(k => updates[k]);
+        const sql = `UPDATE Vehicle SET ${setClause} WHERE VehicleID = ?`;
+
+        conn.query(sql, [...values, vehicleID], (err, result) => {
+          if (err) {
+            console.error("Update failed:", err.message);
+            reject(err);
+          } else {
+            console.log(`Vehicle ${vehicleID} updated successfully.`);
+            resolve(result.affectedRows > 0);
+          }
+        });
+      });
     });
   },
 
   // DELETE
   deleteVehicle: (vehicleID) => {
-    const sql = `DELETE FROM Vehicle WHERE VehicleID = ?`;
-    conn.query(sql, [vehicleID], (err, result) => {
-      if (err) {
-        console.error("Delete failed:", err.message);
-      } else if (result.affectedRows === 0) {
-        console.log(`No vehicle found with ID ${vehicleID}`);
-      } else {
-        console.log(` Vehicle ${vehicleID} deleted successfully.`);
-      }
+    return new Promise((resolve, reject) => {
+      // Check if vehicle is in any pending orders
+      const checkOrderSql = `
+        SELECT COUNT(*) as count 
+        FROM OrderItem oi
+        JOIN Orders o ON oi.OrderID = o.OrderID
+        WHERE oi.VehicleID = ? AND o.Status = 'Pending'
+      `;
+      
+      conn.query(checkOrderSql, [vehicleID], (err, results) => {
+        if (err) {
+          console.error('Error checking vehicle in orders:', err.message);
+          reject(err);
+          return;
+        }
+        
+        if (results[0].count > 0) {
+          reject(new Error('Không thể xóa sản phẩm có trong đơn hàng đang chờ xử lý'));
+          return;
+        }
+        
+        // Check if vehicle exists
+        const checkVehicleSql = 'SELECT VehicleID FROM Vehicle WHERE VehicleID = ?';
+        
+        conn.query(checkVehicleSql, [vehicleID], (err, vehicleResults) => {
+          if (err) {
+            console.error('Error checking vehicle:', err.message);
+            reject(err);
+            return;
+          }
+          
+          if (vehicleResults.length === 0) {
+            console.log('Vehicle not found:', vehicleID);
+            resolve(false);
+            return;
+          }
+          
+          // Delete vehicle
+          const deleteSql = 'DELETE FROM Vehicle WHERE VehicleID = ?';
+          
+          conn.query(deleteSql, [vehicleID], (err, result) => {
+            if (err) {
+              console.error('Delete vehicle failed:', err.message);
+              reject(err);
+            } else {
+              console.log(`Vehicle ${vehicleID} deleted successfully`);
+              resolve(result.affectedRows > 0);
+            }
+          });
+        });
+      });
     });
   },
 
@@ -160,6 +222,50 @@ const vehicleModel = {
           reject(err);
         } else {
           resolve(results);
+        }
+      });
+    });
+  },
+
+  // ADD OR UPDATE VEHICLE IMAGE
+  upsertVehicleImage: (vehicleID, imageUrl, priority = 1) => {
+    return new Promise((resolve, reject) => {
+      // Check if image already exists
+      const checkSql = 'SELECT * FROM Images WHERE VehicleID = ? AND ImagePriority = ?';
+      
+      conn.query(checkSql, [vehicleID, priority], (err, results) => {
+        if (err) {
+          console.error('Error checking image:', err.message);
+          reject(err);
+          return;
+        }
+
+        if (results.length > 0) {
+          // Update existing image
+          const updateSql = 'UPDATE Images SET ImageLink = ? WHERE VehicleID = ? AND ImagePriority = ?';
+          
+          conn.query(updateSql, [imageUrl, vehicleID, priority], (err, result) => {
+            if (err) {
+              console.error('Error updating image:', err.message);
+              reject(err);
+            } else {
+              console.log(`Image updated for vehicle ${vehicleID}`);
+              resolve(result);
+            }
+          });
+        } else {
+          // Insert new image
+          const insertSql = 'INSERT INTO Images (VehicleID, ImagePriority, ImageLink) VALUES (?, ?, ?)';
+          
+          conn.query(insertSql, [vehicleID, priority, imageUrl], (err, result) => {
+            if (err) {
+              console.error('Error inserting image:', err.message);
+              reject(err);
+            } else {
+              console.log(`Image added for vehicle ${vehicleID}`);
+              resolve(result);
+            }
+          });
         }
       });
     });

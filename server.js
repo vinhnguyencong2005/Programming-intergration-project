@@ -14,6 +14,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 // Khởi tạo Express app
 const app = express();
@@ -28,6 +29,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ============ ROUTES ============
 // Page routes (render HTML)
 app.use('/', pageRoutes);
+
+// Admin routes
+app.use('/', adminRoutes);
 
 // API routes
 app.use('/api/vehicles', vehicleRoutes);

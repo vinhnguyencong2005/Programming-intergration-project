@@ -8,6 +8,9 @@ router.post('/register', authController.register);
 // Login customer
 router.post('/login', authController.login);
 
+// Login admin
+router.post('/admin/login', authController.loginAdmin);
+
 // Logout
 router.post('/logout', authController.logout);
 
