@@ -161,7 +161,8 @@ INSERT INTO Customer(Password, Username, Name, Phone, Email, Address) VALUES
 ('matkhau3', 'meowMeow', 'Trần Minh Mèo', '0977123456', 'meomeo@gmail.com', '789 Cách Mạng Tháng 8, Quận 3, TP.HCM'),
 ('matkhau4', 'superBoy', 'Lê Hoài Bảo', '0909876532', 'lebao@hotmail.com', '12 Võ Văn Tần, Quận 3, TP.HCM'),
 ('matkhau5', 'sunnyGirl', 'Phạm Ngọc Ánh', '0938123123', 'ngocanh@yahoo.com', '98 Trần Hưng Đạo, Quận 5, TP.HCM'),
-('matkhau6', 'motorKing', 'Đặng Quốc Huy', '0944556677', 'quochuy@biker.vn', '20 Nguyễn Trãi, Quận 5, TP.HCM');
+('matkhau6', 'motorKing', 'Đặng Quốc Huy', '0944556677', 'quochuy@biker.vn', '20 Nguyễn Trãi, Quận 5, TP.HCM'),
+('$2b$10$7SZEmtSWEWCc3oWjc59UdOKLEHbwpylS06xRajg7DL863FrRZnSZy', 'cus', 'Thế Giới', '0944556678', 'world@biker.vn', '24 Nguyễn Trãi, Quận 5, TP.HCM');
 
 INSERT INTO Warehouse(WarehouseID, Address) VALUES
 (1, 'Thành Phố Hồ Chí Minh');

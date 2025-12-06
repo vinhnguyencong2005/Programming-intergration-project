@@ -13,6 +13,7 @@ const vehicleRoutes = require('./routes/vehicleRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const authRoutes = require('./routes/authRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 // Khởi tạo Express app
 const app = express();
@@ -32,6 +33,7 @@ app.use('/', pageRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 app.use('/auth', authRoutes);
 
 // ============ ERROR HANDLING ============

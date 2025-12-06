@@ -37,4 +37,9 @@ router.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/register.html'));
 });
 
+// Render trang giỏ hàng
+router.get('/cart', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/cart.html'));
+});
+
 module.exports = router;

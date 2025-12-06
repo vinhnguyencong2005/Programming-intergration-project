@@ -22,7 +22,7 @@ const authController = {
         });
       }
 
-      const customer = await userModel.registerCustomer(
+      const result = await userModel.registerCustomer(
         username, 
         password, 
         name, 
@@ -33,6 +33,7 @@ const authController = {
 
       // Format response to match login response structure
       const responseData = {
+        ID: result.insertId,
         Username: username,
         Name: name,
         Email: email,

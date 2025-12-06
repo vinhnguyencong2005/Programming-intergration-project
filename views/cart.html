@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ Hàng - BKMotor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        .cart-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .cart-header {
+            margin-bottom: 30px;
+        }
+
+        .cart-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+            gap: 20px;
+        }
+
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 120px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 2fr 200px 150px 40px;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-item-details {
+            min-width: 0;
+        }
+
+        .cart-item-details h5 {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .cart-item-details p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .quantity-btn {
+            width: 35px;
+            height: 35px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .quantity-btn:hover {
+            background: #f0f0f0;
+            border-color: #0d6efd;
+        }
+
+        .quantity-input {
+            width: 60px;
+            height: 35px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            flex-shrink: 0;
+        }
+
+        .cart-item-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0d6efd;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.3rem;
+            padding: 5px 10px;
+            transition: color 0.2s;
+            margin: 0;
+        }
+
+        .remove-btn:hover {
+            color: #bb2d3b;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .cart-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .cart-item-info {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .cart-item-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .cart-item-price {
+                text-align: left;
+            }
+
+            .quantity-controls {
+                justify-content: flex-start;
+            }
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .summary-row.total {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0d6efd;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-cart .fa-shopping-cart {
+            font-size: 5rem;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart h3 {
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-motorcycle text-primary me-2" style="font-size: 2rem;"></i>
+                <span class="fw-bold" style="font-size: 1.5rem;">BKMotor</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/vehicles">Sản Phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/#about">Về Chúng Tôi</a>
+                    </li>
+                    
+                    <!-- Shopping Cart Icon (always visible) -->
+                    <li class="nav-item">
+                        <a class="nav-link active fw-semibold px-3 position-relative" href="/cart" id="cartIcon">
+                            <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount" style="display: none; font-size: 0.7rem;">
+                                0
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <!-- Profile Dropdown (always visible) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold px-3 d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-2" style="font-size: 1.3rem;"></i>
+                            <span id="userDisplayName">Login</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="profileMenu">
+                            <!-- When not logged in -->
+                            <li class="auth-menu-item">
+                                <a class="dropdown-item" href="/login">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                                </a>
+                            </li>
+                            <li class="auth-menu-item">
+                                <a class="dropdown-item" href="/register">
+                                    <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                                </a>
+                            </li>
+                            
+                            <!-- When logged in -->
+                            <li class="user-menu-item" style="display: none;">
+                                <h6 class="dropdown-header" id="userFullName">Tên người dùng</h6>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                </a>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi
+                                </a>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item text-danger" href="#" id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng Xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Cart Content -->
+    <div class="cart-container">
+        <div class="cart-header">
+            <h2 class="mb-1">Giỏ Hàng Của Bạn</h2>
+            <p class="text-muted">Quản lý sản phẩm trong giỏ hàng</p>
+        </div>
+
+        <!-- Empty Cart Message -->
+        <div class="empty-cart" id="emptyCart" style="display: none;">
+            <i class="fas fa-shopping-cart"></i>
+            <h3>Giỏ hàng của bạn đang trống</h3>
+            <p class="text-muted mb-4">Hãy thêm sản phẩm yêu thích vào giỏ hàng nhé!</p>
+            <a href="/vehicles" class="btn btn-warning btn-lg px-5 py-3 rounded-pill fw-semibold">
+                <i class="fas fa-motorcycle me-2"></i>Xem Sản Phẩm
+            </a>
+        </div>
+
+        <!-- Cart Items -->
+        <div class="row" id="cartContent" style="display: none;">
+            <div class="col-lg-8">
+                <div class="cart-table">
+                    <div id="cartItemsList">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <button class="btn btn-outline-danger" id="clearCartBtn">
+                        <i class="fas fa-trash me-2"></i>Xóa Tất Cả
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="cart-summary">
+                    <h4 class="mb-4">Tổng Đơn Hàng</h4>
+                    
+                    <div class="summary-row">
+                        <span>Tổng tiền hàng:</span>
+                        <span id="subtotal">0 ₫</span>
+                    </div>
+                    
+                    <div class="summary-row">
+                        <span>Giảm giá:</span>
+                        <span id="discount" class="text-danger">0 ₫</span>
+                    </div>
+                    
+                    <div class="summary-row total">
+                        <span>Tổng cộng:</span>
+                        <span id="total">0 ₫</span>
+                    </div>
+                    
+                    <button class="btn btn-primary w-100 mt-4 btn-lg" id="checkoutBtn">
+                        <i class="fas fa-credit-card me-2"></i>Thanh Toán
+                    </button>
+                    
+                    <a href="/vehicles" class="btn btn-outline-primary w-100 mt-3">
+                        <i class="fas fa-arrow-left me-2"></i>Tiếp Tục Mua Hàng
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="mb-3">
+                        <i class="fas fa-motorcycle me-2"></i>BKMotor
+                    </h5>
+                    <p class="text-white-50">Đại lý xe máy uy tín, chất lượng hàng đầu Việt Nam.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Liên Hệ</h5>
+                    <p class="text-white-50">
+                        <i class="fas fa-map-marker-alt me-2"></i>268 Lý Thường Kiệt, Phường 14, Quận 10, TP.HCM<br>
+                        <i class="fas fa-phone me-2"></i>(028) 3865 4321<br>
+                        <i class="fas fa-envelope me-2"></i>bkmotor@hcmut.edu.vn
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="mb-3">Theo Dõi Chúng Tôi</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white-50 me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-white-50 me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-white-50"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-50">
+            <div class="text-center text-white-50">
+                <p class="mb-0">&copy; 2024 BKMotor. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/cart.js"></script>
+</body>
+</html>

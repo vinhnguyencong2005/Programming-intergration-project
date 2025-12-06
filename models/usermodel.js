@@ -176,7 +176,7 @@ const userModel = {
   loginCustomer: async (username, password) => {
     const bcrypt = require('bcrypt');
     return new Promise((resolve, reject) => {
-      const sql = `SELECT Username, Password, Name, Phone, Email, Address FROM Customer WHERE Username = ?`;
+      const sql = `SELECT ID, Username, Password, Name, Phone, Email, Address FROM Customer WHERE Username = ?`;
       
       conn.query(sql, [username], async (err, results) => {
         if (err) {

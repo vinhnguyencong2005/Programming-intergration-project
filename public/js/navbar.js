@@ -97,11 +97,56 @@
     // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
         checkAuthStatus();
+        loadCartCount();
         
         // Add logout event listener
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', handleLogout);
         }
+
+        // Update cart icon link
+        const cartIcon = document.getElementById('cartIcon');
+        if (cartIcon) {
+            cartIcon.href = '/cart';
+        }
     });
+
+    // Load cart item count
+    async function loadCartCount() {
+        try {
+            const userData = localStorage.getItem('userData');
+            
+            if (!userData) {
+                updateCartBadge(0);
+                return;
+            }
+
+            const user = JSON.parse(userData);
+            const response = await fetch(`/api/cart/count?customerID=${user.ID}`);
+            const data = await response.json();
+
+            if (data.success) {
+                updateCartBadge(data.count);
+            } else {
+                updateCartBadge(0);
+            }
+        } catch (error) {
+            console.error('Error loading cart count:', error);
+            updateCartBadge(0);
+        }
+    }
+
+    // Update cart badge
+    function updateCartBadge(count) {
+        const cartCount = document.getElementById('cartCount');
+        if (cartCount) {
+            if (count > 0) {
+                cartCount.textContent = count;
+                cartCount.style.display = 'inline-block';
+            } else {
+                cartCount.style.display = 'none';
+            }
+        }
+    }
 })();
