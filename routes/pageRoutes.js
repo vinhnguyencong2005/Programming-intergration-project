@@ -27,4 +27,14 @@ router.get('/orders', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/orders.html'));
 });
 
+// Render trang đăng nhập
+router.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/login.html'));
+});
+
+// Render trang đăng ký
+router.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/register.html'));
+});
+
 module.exports = router;

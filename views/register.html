@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - Xe Máy Việt Nam</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-motorcycle text-primary me-2" style="font-size: 2rem;"></i>
+                <span class="fw-bold" style="font-size: 1.5rem;">BKMotor</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/vehicles">Sản Phẩm</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3" href="/#about">Về Chúng Tôi</a>
+                    </li>
+                    
+                    <!-- Shopping Cart Icon (always visible) -->
+                    <li class="nav-item">
+                        <a class="nav-link fw-semibold px-3 position-relative" href="#" id="cartIcon">
+                            <i class="fas fa-shopping-cart" style="font-size: 1.3rem;"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="cartCount" style="display: none; font-size: 0.7rem;">
+                                0
+                            </span>
+                        </a>
+                    </li>
+                    
+                    <!-- Profile Dropdown (always visible) -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle fw-semibold px-3 d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-2" style="font-size: 1.3rem;"></i>
+                            <span id="userDisplayName">Login</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown" id="profileMenu">
+                            <!-- When not logged in -->
+                            <li class="auth-menu-item">
+                                <a class="dropdown-item" href="/login">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                                </a>
+                            </li>
+                            <li class="auth-menu-item">
+                                <a class="dropdown-item" href="/register">
+                                    <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                                </a>
+                            </li>
+                            
+                            <!-- When logged in -->
+                            <li class="user-menu-item" style="display: none;">
+                                <h6 class="dropdown-header" id="userFullName">Tên người dùng</h6>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user me-2"></i>Thông tin cá nhân
+                                </a>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-shopping-bag me-2"></i>Đơn hàng của tôi
+                                </a>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item text-danger" href="#" id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Register Section -->
+    <div class="auth-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8">
+                    <div class="auth-card">
+                        <div class="auth-header">
+                            <div class="auth-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h2>Đăng Ký Tài Khoản</h2>
+                            <p class="text-muted">Tạo tài khoản mới để mua xe</p>
+                        </div>
+
+                        <div id="alertContainer"></div>
+
+                        <form id="registerForm">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="username" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Tên Đăng Nhập <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                    <div class="form-text">Tối thiểu 3 ký tự</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="fullName" class="form-label">
+                                        <i class="fas fa-id-card me-2"></i>Họ Và Tên <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Mật Khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="password" name="password" required>
+                                        <!-- <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button> -->
+                                    </div>
+                                    <div class="form-text">Tối thiểu 6 ký tự</div>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label for="confirmPassword" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Xác Nhận Mật Khẩu <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                                        <!-- <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>Số Điện Thoại
+                                </label>
+                                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Địa Chỉ
+                                </label>
+                                <input type="text" class="form-control" id="address" name="address" rows="2">
+                            </div>
+
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="agreeTerms" required>
+                                <label class="form-check-label" for="agreeTerms">
+                                    Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 btn-lg mb-3" id="registerBtn">
+                                <i class="fas fa-user-plus me-2"></i>Đăng Ký
+                            </button>
+                        </form>
+
+                        <div class="auth-footer">
+                            <p class="text-center mb-0">
+                                Đã có tài khoản? <a href="/login">Đăng nhập ngay</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-auto">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold mb-3">Về BKMotor</h5>
+                    <p class="text-white-50 small">Chuyên cung cấp xe máy chính hãng từ các thương hiệu hàng đầu với giá cả cạnh tranh và dịch vụ tốt nhất.</p>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold mb-3">Liên Kết</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="/" class="text-white-50 text-decoration-none small">Trang Chủ</a></li>
+                        <li class="mb-2"><a href="/vehicles" class="text-white-50 text-decoration-none small">Sản Phẩm</a></li>
+                        <li class="mb-2"><a href="/#about" class="text-white-50 text-decoration-none small">Về Chúng Tôi</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="fw-bold mb-3">Liên Hệ</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            <small class="text-white-50">268 Lý Thường Kiệt, Q.10, TP.HCM</small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-phone me-2"></i>
+                            <small class="text-white-50">0123 456 789</small>
+                        </li>
+                        <li class="mb-3">
+                            <i class="fas fa-envelope me-2"></i>
+                            <small class="text-white-50">contact@bkmotor.vn</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 border-secondary">
+            <div class="text-center text-white-50">
+                <p class="mb-0">&copy; 2025 BKMotor. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/navbar.js"></script>
+    <script src="/js/auth.js"></script>
+</body>
+</html>
