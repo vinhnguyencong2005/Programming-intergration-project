@@ -158,13 +158,15 @@ CREATE TABLE AddToWishlist ( -- This is like a wishlist for user
     FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID) ON DELETE CASCADE
 );
 
+-- các mật khẩu sẽ lần lượt là: "matkhau1", "matkhau2", "matkhau3", "matkhau4", "matkhau5", "matkhau6", "matkhau7"
+    
 INSERT INTO Customer(Password, Username, Name, Phone, Email, Address) VALUES
-('matkhau1', 'toilaVinhne', 'Nguyễn Công Vinh', '01234567809', 'vinh.nguyencong@hcmut.edu.vn', 'Việt Nam'),
-('matkhau2', 'toilaChatgptne', 'Nguyễn Văn Chatgpt', '0918273645', 'chat.gpt@hcmut.edu.vn', 'Việt Nam'),
-('matkhau3', 'meowMeow', 'Trần Minh Mèo', '0977123456', 'meomeo@gmail.com', '789 Cách Mạng Tháng 8, Quận 3, TP.HCM'),
-('matkhau4', 'superBoy', 'Lê Hoài Bảo', '0909876532', 'lebao@hotmail.com', '12 Võ Văn Tần, Quận 3, TP.HCM'),
-('matkhau5', 'sunnyGirl', 'Phạm Ngọc Ánh', '0938123123', 'ngocanh@yahoo.com', '98 Trần Hưng Đạo, Quận 5, TP.HCM'),
-('matkhau6', 'motorKing', 'Đặng Quốc Huy', '0944556677', 'quochuy@biker.vn', '20 Nguyễn Trãi, Quận 5, TP.HCM'),
+('$2b$10$VkfMsLOQRwHzz8nTeYIJIOZ8BEfoQDJ7A2TSDW2FJPxPOgQhzGX1q', 'toilaVinhne', 'Nguyễn Công Vinh', '01234567809', 'vinh.nguyencong@hcmut.edu.vn', 'Việt Nam'),
+('$2b$10$a5OFr74T3/P8vsMrnK/Zqu/uTunQBNoz37HUE5lnG0gCmk.J.fUGu', 'toilaChatgptne', 'Nguyễn Văn Chatgpt', '0918273645', 'chat.gpt@hcmut.edu.vn', 'Việt Nam'),
+('$2b$10$MNJjq5CN1V2qnI0btLDpo.HyU11z11sWdabP/zzrlyw62fi3yL9ei', 'meowMeow', 'Trần Minh Mèo', '0977123456', 'meomeo@gmail.com', '789 Cách Mạng Tháng 8, Quận 3, TP.HCM'),
+('$2b$10$bA76KAtB5vmAANhzmOcc6.Dp/h.s0pM678uDyKbRWbr4x9Ic9YSJ6', 'superBoy', 'Lê Hoài Bảo', '0909876532', 'lebao@hotmail.com', '12 Võ Văn Tần, Quận 3, TP.HCM'),
+('$2b$10$psdBZXdwbQzF39PBE2upGeiloG8FLz.RYs68cazHkE4WR.XzdWXBm', 'sunnyGirl', 'Phạm Ngọc Ánh', '0938123123', 'ngocanh@yahoo.com', '98 Trần Hưng Đạo, Quận 5, TP.HCM'),
+('$2b$10$IQpyJ7FLVVE2pAs8YVtMQeChOc2vXuWzjzjd4WSfS9xGpg3NJuk7K', 'motorKing', 'Đặng Quốc Huy', '0944556677', 'quochuy@biker.vn', '20 Nguyễn Trãi, Quận 5, TP.HCM'),
 ('$2b$10$7SZEmtSWEWCc3oWjc59UdOKLEHbwpylS06xRajg7DL863FrRZnSZy', 'cus', 'Thế Giới', '0944556678', 'world@biker.vn', '24 Nguyễn Trãi, Quận 5, TP.HCM');
 
 INSERT INTO Warehouse(WarehouseID, Address) VALUES
