@@ -75,7 +75,7 @@ Server sẽ chạy tại: `http://localhost:3000`
 Sau khi import database, bạn có thể đăng nhập với các tài khoản có sẵn hoặc đăng ký tài khoản mới.
 
 ### Admin:
-- URL: `http://localhost:3000/admin-login`
+- URL: `http://localhost:3000/admin`
 - Kiểm tra trong database bảng `Admin`
 
 ### Customer:
