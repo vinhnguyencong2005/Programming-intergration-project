@@ -47,4 +47,14 @@ router.get('/checkout', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/checkout.html'));
 });
 
+// Render trang profile
+router.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/profile.html'));
+});
+
+// Render trang đơn hàng của khách hàng
+router.get('/my-orders', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/my-orders.html'));
+});
+
 module.exports = router;

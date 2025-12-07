@@ -250,6 +250,44 @@ const orderModel = {
         });
       });
     });
+  },
+
+  // Get orders by customer ID with order items and vehicle details
+  getOrdersByCustomer: (customerId) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT 
+          o.OrderID,
+          o.CreateDate as OrderDate,
+          o.Status,
+          o.GrandTotal as TotalAmount,
+          oi.VehicleID,
+          oi.Quantity,
+          oi.Price,
+          v.Name as VehicleName,
+          img.ImageLink
+        FROM Orders o
+        INNER JOIN OrderItem oi ON o.OrderID = oi.OrderID
+        LEFT JOIN Vehicle v ON oi.VehicleID = v.VehicleID
+        LEFT JOIN (
+          SELECT VehicleID, ImageLink
+          FROM Images
+          WHERE ImagePriority = 1
+        ) img ON oi.VehicleID = img.VehicleID
+        WHERE o.CustomerID = ?
+        ORDER BY o.CreateDate DESC
+      `;
+      
+      conn.query(sql, [customerId], (err, results) => {
+        if (err) {
+          console.error('Error getting orders by customer:', err.message);
+          reject(err);
+        } else {
+          console.log(`Retrieved ${results.length} order items for customer ${customerId}`);
+          resolve(results);
+        }
+      });
+    });
   }
 };
 

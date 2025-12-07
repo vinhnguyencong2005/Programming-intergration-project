@@ -134,7 +134,7 @@ function createVehicleCard(vehicle) {
                         <i class="fas fa-motorcycle me-1"></i>${vehicle.Type || 'Chưa phân loại'}
                     </div>
                     <div class="vehicle-price">${formatPrice(vehicle.Price)} VNĐ</div>
-                    <button class="btn btn-view-detail btn-primary" onclick="viewDetail('${vehicle.VehicleID}')">
+                    <button class="btn btn-view-detail" onclick="viewDetail('${vehicle.VehicleID}')">
                         <i class="fas fa-info-circle me-2"></i>Xem Chi Tiết
                     </button>
                 </div>

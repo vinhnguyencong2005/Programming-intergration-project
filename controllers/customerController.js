@@ -1,4 +1,5 @@
 const userModel = require('../models/usermodel');
+const orderModel = require('../models/ordermodel');
 
 const customerController = {
   // Lấy tất cả customer
@@ -15,8 +16,19 @@ const customerController = {
   getCustomerById: async (req, res) => {
     try {
       const customers = await userModel.readCustomer('ID', req.params.id);
-      if (customers.length > 0) {
-        res.json({ success: true, data: customers[0] });
+      if (customers && customers.length > 0) {
+        const customer = customers[0];
+        // Map field names for frontend
+        const profileData = {
+          CustomerID: customer.ID,
+          Username: customer.Username,
+          FullName: customer.Name,
+          PhoneNumber: customer.Phone,
+          Email: customer.Email,
+          Address: customer.Address,
+          CreateDate: customer.CreateDate
+        };
+        res.json({ success: true, data: profileData });
       } else {
         res.status(404).json({ success: false, message: 'Customer not found' });
       }
@@ -37,10 +49,21 @@ const customerController = {
   },
 
   // Cập nhật customer
-  updateCustomer: (req, res) => {
+  updateCustomer: async (req, res) => {
     try {
-      userModel.updateCustomer(req.params.id, req.body);
-      res.json({ success: true, message: 'Customer updated successfully' });
+      // Map frontend field names to database field names
+      const updates = {};
+      if (req.body.fullName !== undefined) updates.Name = req.body.fullName;
+      if (req.body.phoneNumber !== undefined) updates.Phone = req.body.phoneNumber;
+      if (req.body.address !== undefined) updates.Address = req.body.address;
+      // Gender field doesn't exist in DB, ignore it
+      
+      const result = await userModel.updateCustomer(req.params.id, updates);
+      if (result.affectedRows > 0) {
+        res.json({ success: true, message: 'Customer updated successfully' });
+      } else {
+        res.status(404).json({ success: false, message: 'Customer not found' });
+      }
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }
@@ -51,6 +74,16 @@ const customerController = {
     try {
       userModel.deleteCustomer(req.params.id);
       res.json({ success: true, message: 'Customer deleted successfully' });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  },
+
+  // Lấy orders của customer
+  getCustomerOrders: async (req, res) => {
+    try {
+      const orders = await orderModel.getOrdersByCustomer(req.params.id);
+      res.json({ success: true, data: orders });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });
     }

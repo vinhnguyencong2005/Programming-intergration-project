@@ -17,4 +17,7 @@ router.put('/:id', customerController.updateCustomer);
 // Xóa customer
 router.delete('/:id', customerController.deleteCustomer);
 
+// Lấy orders của customer
+router.get('/:id/orders', customerController.getCustomerOrders);
+
 module.exports = router;

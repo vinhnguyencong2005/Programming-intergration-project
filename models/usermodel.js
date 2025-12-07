@@ -101,21 +101,26 @@ const userModel = {
 
     if (keys.length === 0) {
       console.error("No valid fields to update");
-      return;
+      return Promise.resolve({ affectedRows: 0 });
     }
 
     const setClause = keys.map(k => `${k} = ?`).join(", ");
     const values = keys.map(k => updates[k]);
     const sql = `UPDATE ${tableName} SET ${setClause} WHERE ID = ?`;
 
-    conn.query(sql, [...values, id], (err, result) => {
-      if (err) {
-        console.error(`Update failed in ${tableName}:`, err.message);
-      } else if (result.affectedRows === 0) {
-        console.log(`No user found with ID ${id} in ${tableName}`);
-      } else {
-        console.log(`User ${id} updated successfully in ${tableName}`);
-      }
+    return new Promise((resolve, reject) => {
+      conn.query(sql, [...values, id], (err, result) => {
+        if (err) {
+          console.error(`Update failed in ${tableName}:`, err.message);
+          reject(err);
+        } else if (result.affectedRows === 0) {
+          console.log(`No user found with ID ${id} in ${tableName}`);
+          resolve(result);
+        } else {
+          console.log(`User ${id} updated successfully in ${tableName}`);
+          resolve(result);
+        }
+      });
     });
   },
 
@@ -143,7 +148,7 @@ const userModel = {
   },
 
   updateCustomer: (id, updates) => {
-    userModel.updateUser("Customer", id, updates);
+    return userModel.updateUser("Customer", id, updates);
   },
 
   deleteCustomer: (id) => {
