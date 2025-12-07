@@ -1,5 +1,6 @@
 const orderModel = require('../models/ordermodel');
 const orderItemModel = require('../models/orderItemmodel');
+const applyModel = require('../models/applyModel');
 
 const orderController = {
   // Lấy tất cả orders
@@ -71,7 +72,7 @@ const orderController = {
   // Checkout - Create order and order items from cart
   checkout: async (req, res) => {
     try {
-      const { customerID, status, total, grandTotal, shippingInfo, note, paymentMethod, items } = req.body;
+      const { customerID, status, total, grandTotal, voucherCode, shippingInfo, note, paymentMethod, items } = req.body;
 
       // Validate required fields
       if (!customerID || !items || items.length === 0) {
@@ -90,6 +91,16 @@ const orderController = {
       );
 
       const orderID = orderResult.insertId;
+
+      // Apply voucher if provided
+      if (voucherCode) {
+        try {
+          await applyModel.applyVoucherToOrder(orderID, voucherCode);
+        } catch (voucherError) {
+          console.error('Error applying voucher:', voucherError);
+          // Continue with order even if voucher application fails
+        }
+      }
 
       // Create order items
       for (const item of items) {
@@ -111,7 +122,8 @@ const orderController = {
           orderID: orderID,
           total: total,
           grandTotal: grandTotal,
-          status: status || "Pending"
+          status: status || "Pending",
+          voucherApplied: !!voucherCode
         }
       });
     } catch (error) {

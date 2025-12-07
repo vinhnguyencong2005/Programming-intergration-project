@@ -17,6 +17,7 @@ const cartRoutes = require('./routes/cartRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
+const voucherRoutes = require('./routes/voucherRoutes');
 
 // Khởi tạo Express app
 const app = express();
@@ -41,6 +42,7 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/vouchers', voucherRoutes);
 app.use('/api', reportRoutes);
 app.use('/auth', authRoutes);
 

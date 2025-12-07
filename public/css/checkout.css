@@ -142,3 +142,74 @@
 .required {
     color: #dc3545;
 }
+
+/* Voucher Section */
+.voucher-section {
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.voucher-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+}
+
+.voucher-card:hover {
+    border-color: #0d6efd;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+}
+
+.voucher-card.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #f8f9fa;
+}
+
+.voucher-card.disabled:hover {
+    border-color: #e0e0e0;
+    transform: none;
+    box-shadow: none;
+}
+
+.voucher-code {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #0d6efd;
+    font-family: 'Courier New', monospace;
+    margin-bottom: 8px;
+}
+
+.voucher-reduction {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #dc3545;
+    margin-bottom: 8px;
+}
+
+.voucher-condition {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.voucher-dates {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.voucher-quantity {
+    font-size: 0.85rem;
+    color: #28a745;
+    font-weight: 500;
+}
+
+.voucher-card.disabled .voucher-quantity {
+    color: #dc3545;
+}

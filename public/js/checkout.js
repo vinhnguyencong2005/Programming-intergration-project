@@ -1,6 +1,8 @@
 // Checkout page functionality
 let cartItems = [];
 let userData = null;
+let selectedVoucher = null;
+let voucherModal = null;
 
 document.addEventListener("DOMContentLoaded", function() {
     // Check authentication
@@ -12,11 +14,17 @@ document.addEventListener("DOMContentLoaded", function() {
         return;
     }
 
+    // Initialize voucher modal
+    voucherModal = new bootstrap.Modal(document.getElementById('voucherModal'));
+
     // Load cart items and user info
     loadCheckoutData();
 
     // Payment method selection
     setupPaymentMethods();
+
+    // Voucher button
+    document.getElementById("selectVoucherBtn").addEventListener("click", openVoucherModal);
 
     // Place order button
     const placeOrderBtn = document.getElementById("placeOrderBtn");
@@ -85,10 +93,19 @@ function calculateOrderSummary(items) {
         totalDiscount += itemPrice * item.Discount;
     });
 
-    const grandTotal = subtotal - totalDiscount;
+    const afterDiscount = subtotal - totalDiscount;
+    
+    // Apply voucher if selected - trừ trực tiếp vào tổng cộng
+    let voucherAmount = 0;
+    if (selectedVoucher) {
+        voucherAmount = selectedVoucher.Reduction; // Trừ trực tiếp số tiền
+    }
+
+    const grandTotal = afterDiscount - voucherAmount;
 
     document.getElementById("subtotal").textContent = formatCurrency(subtotal);
     document.getElementById("discount").textContent = formatCurrency(totalDiscount);
+    document.getElementById("voucherDiscount").textContent = formatCurrency(voucherAmount);
     document.getElementById("grandTotal").textContent = formatCurrency(grandTotal);
 }
 
@@ -156,7 +173,17 @@ async function handlePlaceOrder() {
             totalDiscount += itemPrice * item.Discount;
         });
 
-        const grandTotal = subtotal - totalDiscount;
+        const afterDiscount = subtotal - totalDiscount;
+        
+        // Apply voucher if selected - trừ trực tiếp vào tổng cộng
+        let voucherAmount = 0;
+        let voucherCode = null;
+        if (selectedVoucher) {
+            voucherAmount = selectedVoucher.Reduction; // Trừ trực tiếp số tiền
+            voucherCode = selectedVoucher.Code;
+        }
+
+        const grandTotal = afterDiscount - voucherAmount;
 
         // Prepare order data
         const orderData = {
@@ -164,6 +191,7 @@ async function handlePlaceOrder() {
             status: "Pending",
             total: subtotal,
             grandTotal: grandTotal,
+            voucherCode: voucherCode,
             shippingInfo: {
                 name: name,
                 phone: phone,
@@ -238,4 +266,165 @@ function formatCurrency(amount) {
         style: 'currency',
         currency: 'VND'
     }).format(amount);
+}
+
+// ============ VOUCHER FUNCTIONALITY ============
+// Open voucher modal
+async function openVoucherModal() {
+    voucherModal.show();
+    await loadAvailableVouchers();
+}
+
+// Load available vouchers
+async function loadAvailableVouchers() {
+    const loadingEl = document.getElementById('voucherLoading');
+    const listEl = document.getElementById('voucherList');
+    const emptyEl = document.getElementById('voucherEmpty');
+
+    loadingEl.classList.remove('d-none');
+    listEl.classList.add('d-none');
+    emptyEl.classList.add('d-none');
+
+    try {
+        const response = await fetch('/api/vouchers');
+        const data = await response.json();
+
+        loadingEl.classList.add('d-none');
+
+        if (data.success && data.data && data.data.length > 0) {
+            const now = new Date();
+            const availableVouchers = data.data.filter(voucher => {
+                const startDate = new Date(voucher.StartDate);
+                const endDate = new Date(voucher.EndDate);
+                return now >= startDate && now <= endDate && voucher.Quantity > 0;
+            });
+
+            if (availableVouchers.length > 0) {
+                displayVouchers(availableVouchers);
+                listEl.classList.remove('d-none');
+            } else {
+                emptyEl.classList.remove('d-none');
+            }
+        } else {
+            emptyEl.classList.remove('d-none');
+        }
+    } catch (error) {
+        console.error('Error loading vouchers:', error);
+        loadingEl.classList.add('d-none');
+        emptyEl.classList.remove('d-none');
+    }
+}
+
+// Display vouchers
+function displayVouchers(vouchers) {
+    const listEl = document.getElementById('voucherList');
+    
+    // Calculate current total
+    let subtotal = 0;
+    let totalDiscount = 0;
+    cartItems.forEach(item => {
+        const itemPrice = item.Price * item.Quantity;
+        subtotal += itemPrice;
+        totalDiscount += itemPrice * item.Discount;
+    });
+    const currentTotal = subtotal - totalDiscount;
+
+    listEl.innerHTML = vouchers.map(voucher => {
+        const canApply = currentTotal >= voucher.Conditions;
+        
+        return `
+            <div class="voucher-card ${!canApply ? 'disabled' : ''}" data-voucher='${JSON.stringify(voucher)}'>
+                <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                        <div class="voucher-code">${voucher.Code}</div>
+                        <div class="voucher-reduction">Giảm ${formatCurrency(voucher.Reduction)}</div>
+                        <div class="voucher-condition">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Áp dụng cho đơn hàng từ ${formatCurrency(voucher.Conditions)}
+                        </div>
+                        <div class="voucher-dates">
+                            <i class="far fa-calendar me-1"></i>
+                            ${formatDate(voucher.StartDate)} - ${formatDate(voucher.EndDate)}
+                        </div>
+                        <div class="voucher-quantity ${voucher.Quantity <= 5 ? 'text-warning' : ''}">
+                            <i class="fas fa-ticket-alt me-1"></i>
+                            Còn ${voucher.Quantity} voucher
+                        </div>
+                    </div>
+                    ${canApply ? `
+                        <button class="btn btn-primary btn-sm apply-voucher-btn">
+                            Áp dụng
+                        </button>
+                    ` : `
+                        <span class="badge bg-secondary">Không đủ điều kiện</span>
+                    `}
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    // Attach event listeners
+    document.querySelectorAll('.apply-voucher-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const card = this.closest('.voucher-card');
+            const voucher = JSON.parse(card.dataset.voucher);
+            applyVoucher(voucher);
+        });
+    });
+}
+
+// Apply voucher
+function applyVoucher(voucher) {
+    selectedVoucher = voucher;
+    
+    // Update UI
+    document.getElementById('voucherInput').value = voucher.Code;
+    document.getElementById('appliedVoucherCode').textContent = voucher.Code;
+    document.getElementById('appliedVoucherAmount').textContent = formatCurrency(voucher.Reduction);
+    document.getElementById('voucherApplied').classList.remove('d-none');
+    
+    // Setup remove button
+    document.getElementById('removeVoucherBtn').addEventListener('click', removeVoucher);
+    
+    // Recalculate totals
+    calculateOrderSummary(cartItems);
+    
+    // Close modal
+    voucherModal.hide();
+    
+    // Show success message
+    showAlert('Áp dụng voucher thành công!', 'success');
+}
+
+// Remove voucher
+function removeVoucher() {
+    selectedVoucher = null;
+    document.getElementById('voucherInput').value = '';
+    document.getElementById('voucherApplied').classList.add('d-none');
+    calculateOrderSummary(cartItems);
+    showAlert('Đã hủy voucher', 'info');
+}
+
+// Format date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+}
+
+// Show alert
+function showAlert(message, type = 'success') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
 }
