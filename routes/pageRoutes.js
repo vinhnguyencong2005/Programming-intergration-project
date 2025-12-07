@@ -62,4 +62,9 @@ router.get('/my-orders', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/my-orders.html'));
 });
 
+// Render trang wishlist
+router.get('/wishlist', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/wishlist.html'));
+});
+
 module.exports = router;

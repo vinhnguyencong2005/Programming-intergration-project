@@ -80,6 +80,11 @@
                                 </a>
                             </li>
                             <li class="user-menu-item" style="display: none;">
+                                <a class="dropdown-item" href="/wishlist">
+                                    <i class="fas fa-heart me-2"></i>Danh sách yêu thích
+                                </a>
+                            </li>
+                            <li class="user-menu-item" style="display: none;">
                                 <hr class="dropdown-divider">
                             </li>
                             <li class="user-menu-item" style="display: none;">
@@ -195,9 +200,12 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="action-buttons d-flex gap-3">
+                        <div class="action-buttons d-flex gap-3 mb-3">
                             <button class="btn btn-primary btn-lg flex-grow-1 rounded-pill" id="addToCartBtn">
                                 <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ
+                            </button>
+                            <button class="btn btn-danger btn-lg rounded-pill" id="addToWishlistBtn" title="Thêm vào yêu thích">
+                                <i class="far fa-heart"></i>
                             </button>
                             <button class="btn btn-warning btn-lg rounded-pill" id="reportBtn" data-bs-toggle="modal" data-bs-target="#reportModal">
                                 <i class="fas fa-flag me-2"></i>Báo Cáo

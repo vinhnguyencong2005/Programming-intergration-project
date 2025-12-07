@@ -4,6 +4,7 @@ const vehicleID = urlParams.get('id');
 
 let vehicleData = null;
 let vehicleImages = [];
+let isInWishlist = false;
 
 // Load vehicle detail on page load
 window.addEventListener('DOMContentLoaded', () => {
@@ -12,6 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return;
     }
     loadVehicleDetail();
+    checkWishlistStatus();
 });
 
 async function loadVehicleDetail() {
@@ -189,6 +191,7 @@ function displayRating(rating, totalRatings = 0) {
 
 function setupActionButtons(isInStock) {
     const addToCartBtn = document.getElementById('addToCartBtn');
+    const addToWishlistBtn = document.getElementById('addToWishlistBtn');
     
     if (!isInStock) {
         addToCartBtn.disabled = true;
@@ -200,6 +203,12 @@ function setupActionButtons(isInStock) {
         if (isInStock) {
             await addToCart();
         }
+    });
+
+    // Setup wishlist button
+    updateWishlistButton();
+    addToWishlistBtn.addEventListener('click', async () => {
+        await toggleWishlist();
     });
 }
 
@@ -482,4 +491,123 @@ function formatDateTime(dateString) {
     });
 }
 
+// ============ WISHLIST FUNCTIONALITY ============
+// Check if vehicle is in wishlist
+async function checkWishlistStatus() {
+    try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        
+        if (!userData || !userData.ID) {
+            isInWishlist = false;
+            return;
+        }
+
+        const response = await fetch(`/api/wishlist/check?customerID=${userData.ID}&vehicleID=${vehicleID}`);
+        const data = await response.json();
+
+        if (data.success) {
+            isInWishlist = data.inWishlist;
+            updateWishlistButton();
+        }
+    } catch (error) {
+        console.error('Error checking wishlist:', error);
+    }
+}
+
+// Update wishlist button appearance
+function updateWishlistButton() {
+    const btn = document.getElementById('addToWishlistBtn');
+    if (!btn) return;
+
+    if (isInWishlist) {
+        btn.innerHTML = '<i class="fas fa-heart"></i>';
+        btn.classList.remove('btn-outline-danger');
+        btn.classList.add('btn-danger');
+        btn.title = 'Đã thêm vào yêu thích';
+    } else {
+        btn.innerHTML = '<i class="far fa-heart"></i>';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-outline-danger');
+        btn.title = 'Thêm vào yêu thích';
+    }
+}
+
+// Toggle wishlist (add or remove)
+async function toggleWishlist() {
+    try {
+        const userData = JSON.parse(localStorage.getItem("userData"));
+        
+        if (!userData || !userData.ID) {
+            alert('Vui lòng đăng nhập để sử dụng tính năng này');
+            window.location.href = '/login';
+            return;
+        }
+
+        if (isInWishlist) {
+            // Remove from wishlist
+            const response = await fetch('/api/wishlist/remove', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customerID: userData.ID,
+                    vehicleID: vehicleID
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                isInWishlist = false;
+                updateWishlistButton();
+                showWishlistMessage('Đã xóa khỏi danh sách yêu thích', 'info');
+            } else {
+                alert('Không thể xóa khỏi danh sách yêu thích');
+            }
+        } else {
+            // Add to wishlist
+            const response = await fetch('/api/wishlist/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    customerID: userData.ID,
+                    vehicleID: vehicleID
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                isInWishlist = true;
+                updateWishlistButton();
+                showWishlistMessage('Đã thêm vào danh sách yêu thích', 'success');
+            } else {
+                alert(data.message || 'Không thể thêm vào danh sách yêu thích');
+            }
+        }
+    } catch (error) {
+        console.error('Error toggling wishlist:', error);
+        alert('Có lỗi xảy ra');
+    }
+}
+
+// Show wishlist message
+function showWishlistMessage(message, type = 'success') {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+    alertDiv.style.zIndex = '9999';
+    alertDiv.innerHTML = `
+        <i class="fas fa-heart me-2"></i>${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
+}
 

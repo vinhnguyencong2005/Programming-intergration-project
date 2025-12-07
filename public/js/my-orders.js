@@ -22,10 +22,6 @@ async function loadCustomerProfile() {
             // Update sidebar
             document.getElementById('sidebarName').textContent = customer.FullName || 'Người dùng';
             document.getElementById('sidebarEmail').textContent = customer.Email || '';
-            
-            // Update navbar
-            document.getElementById('userFullName').textContent = customer.FullName || 'Người dùng';
-            document.getElementById('userDisplayName').textContent = customer.FullName || 'Profile';
         }
     } catch (error) {
         console.error('Error loading customer profile:', error);
