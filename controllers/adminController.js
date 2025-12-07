@@ -155,7 +155,7 @@ const adminController = {
 
   createVehicle: async (req, res) => {
     try {
-      const { vehicleId, name, brand, type, price, discount, stock, rating, warehouseID, summary, slug, imageUrl } = req.body;
+      const { vehicleId, name, brand, type, price, discount, stock, rating, warehouseID, summary, slug, imageUrls } = req.body;
 
       if (!vehicleId || !name || !brand || price === undefined || stock === undefined) {
         return res.status(400).json({ 
@@ -178,9 +178,13 @@ const adminController = {
         warehouseID || null
       );
 
-      // Add image if provided
-      if (imageUrl) {
-        await vehicleModel.upsertVehicleImage(vehicleId, imageUrl, 1);
+      // Add multiple images if provided
+      if (imageUrls && Array.isArray(imageUrls) && imageUrls.length > 0) {
+        for (const img of imageUrls) {
+          if (img.url && img.priority) {
+            await vehicleModel.upsertVehicleImage(vehicleId, img.url, img.priority);
+          }
+        }
       }
 
       res.json({ success: true, message: 'Thêm sản phẩm thành công' });
@@ -218,23 +222,56 @@ const adminController = {
   updateVehicle: async (req, res) => {
     try {
       const { vehicleId } = req.params;
-      const updates = req.body;
-      const imageUrl = updates.imageUrl;
-      delete updates.imageUrl; // Remove from updates object
+      const body = { ...req.body };
+      
+      // Extract imageUrls separately
+      const imageUrls = body.imageUrls;
+      delete body.imageUrls;
 
-      // Convert to vehicleModel's updateVehicle format
-      const updated = await vehicleModel.updateVehicle(vehicleId, updates);
+      // Map frontend field names to database field names
+      const fieldMapping = {
+        name: 'Name',
+        price: 'Price',
+        summary: 'Summary',
+        rating: 'Rating',
+        discount: 'Discount',
+        slug: 'Slug',
+        brand: 'Brand',
+        stock: 'Stock',
+        type: 'Type',
+        warehouseID: 'WarehouseID'
+      };
 
-      if (!updated) {
-        return res.status(404).json({ 
-          success: false, 
-          message: 'Không tìm thấy sản phẩm' 
-        });
+      const updates = {};
+      Object.keys(body).forEach(key => {
+        if (fieldMapping[key]) {
+          updates[fieldMapping[key]] = body[key];
+        }
+      });
+
+      // Update vehicle fields (name, price, stock, etc.) if there are any
+      if (Object.keys(updates).length > 0) {
+        const updated = await vehicleModel.updateVehicle(vehicleId, updates);
+        
+        if (!updated) {
+          return res.status(404).json({ 
+            success: false, 
+            message: 'Không tìm thấy sản phẩm' 
+          });
+        }
       }
 
-      // Update image if provided
-      if (imageUrl) {
-        await vehicleModel.upsertVehicleImage(vehicleId, imageUrl, 1);
+      // Handle image updates separately: delete all old images then insert new ones
+      if (imageUrls && Array.isArray(imageUrls) && imageUrls.length > 0) {
+        // Delete all existing images
+        await vehicleModel.deleteAllVehicleImages(vehicleId);
+        
+        // Insert new images
+        for (const img of imageUrls) {
+          if (img.url && img.priority) {
+            await vehicleModel.upsertVehicleImage(vehicleId, img.url, img.priority);
+          }
+        }
       }
 
       res.json({ success: true, message: 'Cập nhật sản phẩm thành công' });

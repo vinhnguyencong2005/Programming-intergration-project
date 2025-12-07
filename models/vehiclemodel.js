@@ -271,6 +271,23 @@ const vehicleModel = {
     });
   },
 
+  // DELETE all images for a vehicle
+  deleteAllVehicleImages: (vehicleID) => {
+    return new Promise((resolve, reject) => {
+      const sql = 'DELETE FROM Images WHERE VehicleID = ?';
+      
+      conn.query(sql, [vehicleID], (err, result) => {
+        if (err) {
+          console.error('Error deleting all images:', err.message);
+          reject(err);
+        } else {
+          console.log(`All images deleted for vehicle ${vehicleID}`);
+          resolve(result);
+        }
+      });
+    });
+  },
+
   // GET AVERAGE RATING FROM RATING TABLE
   getAverageRating: (vehicleID) => {
     return new Promise((resolve, reject) => {

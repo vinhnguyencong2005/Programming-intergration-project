@@ -162,16 +162,19 @@ async function saveNewVehicle() {
     const rating = parseFloat(document.getElementById('addRating').value);
     const warehouseID = document.getElementById('addWarehouse').value;
     const summary = document.getElementById('addSummary').value;
-    const imageUrl = document.getElementById('addImageUrl').value;
     
-    // Auto generate slug from name
-    // const slug = name.toLowerCase()
-    //     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    //     .replace(/đ/g, 'd')
-    //     .replace(/[^a-z0-9\s-]/g, '')
-    //     .replace(/\s+/g, '-')
-    //     .replace(/-+/g, '-')
-    //     .trim();
+    // Collect all image URLs that are not empty
+    const imageUrls = [];
+    for (let i = 1; i <= 6; i++) {
+        const imageUrl = document.getElementById(`addImageUrl${i}`).value.trim();
+        if (imageUrl) {
+            imageUrls.push({
+                url: imageUrl,
+                priority: i
+            });
+        }
+    }
+    
 
     try {
         const response = await fetch('/api/admin/vehicles', {
@@ -191,7 +194,7 @@ async function saveNewVehicle() {
                 warehouseID,
                 summary,
                 slug,
-                imageUrl
+                imageUrls // Send array of images with priorities
             })
         });
 
@@ -214,6 +217,7 @@ async function saveNewVehicle() {
 // Open edit vehicle modal
 async function openEditVehicle(vehicleId) {
     try {
+        // Load vehicle info
         const response = await fetch(`/api/admin/vehicles/${vehicleId}`);
         const data = await response.json();
 
@@ -231,9 +235,22 @@ async function openEditVehicle(vehicleId) {
             document.getElementById('editWarehouse').value = vehicle.WarehouseID || '';
             document.getElementById('editSummary').value = vehicle.Summary || '';
             
-            // Load image URL if exists
-            if (vehicle.imageUrl) {
-                document.getElementById('editImageUrl').value = vehicle.imageUrl;
+            // Clear all image inputs first
+            for (let i = 1; i <= 6; i++) {
+                document.getElementById(`editImageUrl${i}`).value = '';
+            }
+            
+            // Load existing images
+            const imagesResponse = await fetch(`/api/vehicles/${vehicleId}/images`);
+            const imagesData = await imagesResponse.json();
+            
+            if (imagesData.success && imagesData.data) {
+                imagesData.data.forEach(img => {
+                    const priority = img.ImagePriority;
+                    if (priority >= 1 && priority <= 6) {
+                        document.getElementById(`editImageUrl${priority}`).value = img.ImageLink;
+                    }
+                });
             }
 
             editVehicleModal.show();
@@ -263,7 +280,18 @@ async function saveEditVehicle() {
     const rating = parseFloat(document.getElementById('editRating').value);
     const warehouseID = document.getElementById('editWarehouse').value;
     const summary = document.getElementById('editSummary').value;
-    const imageUrl = document.getElementById('editImageUrl').value;
+    
+    // Collect all image URLs that are not empty
+    const imageUrls = [];
+    for (let i = 1; i <= 6; i++) {
+        const imageUrl = document.getElementById(`editImageUrl${i}`).value.trim();
+        if (imageUrl) {
+            imageUrls.push({
+                url: imageUrl,
+                priority: i
+            });
+        }
+    }
 
     try {
         const response = await fetch(`/api/admin/vehicles/${vehicleId}`, {
@@ -280,7 +308,7 @@ async function saveEditVehicle() {
                 rating,
                 warehouseID,
                 summary,
-                imageUrl
+                imageUrls // Send array of images with priorities
             })
         });
 
