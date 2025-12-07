@@ -281,3 +281,52 @@ function showError() {
     document.getElementById('loadingSection').classList.add('d-none');
     document.getElementById('errorSection').classList.remove('d-none');
 }
+
+// Handle Report Submission
+const reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
+
+document.getElementById('submitReportBtn').addEventListener('click', async () => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    
+    if (!userData || !userData.ID) {
+        alert('Vui lòng đăng nhập để gửi báo cáo');
+        window.location.href = '/login';
+        return;
+    }
+
+    const title = document.getElementById('reportTitle').value.trim();
+    const information = document.getElementById('reportInformation').value.trim();
+
+    if (!title || !information) {
+        alert('Vui lòng điền đầy đủ thông tin');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/reports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                information: information,
+                customerID: userData.ID
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Gửi báo cáo thành công! Cảm ơn bạn đã phản hồi.');
+            reportModal.hide();
+            document.getElementById('reportForm').reset();
+        } else {
+            alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+        }
+    } catch (error) {
+        console.error('Error submitting report:', error);
+        alert('Có lỗi xảy ra khi gửi báo cáo');
+    }
+});
+

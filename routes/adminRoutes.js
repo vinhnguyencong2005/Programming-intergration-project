@@ -35,6 +35,11 @@ router.get('/admin/vouchers', (req, res) => {
     res.sendFile(path.join(__dirname, '../views/admin-vouchers.html'));
 });
 
+// Admin reports page
+router.get('/admin/reports', (req, res) => {
+    res.sendFile(path.join(__dirname, '../views/admin-reports.html'));
+});
+
 // ============ API ROUTES ============
 
 // Dashboard API
