@@ -207,11 +207,16 @@ async function handlePlaceOrder() {
                 body: JSON.stringify({ customerID: userData.ID })
             });
 
-            // Show success message
-            alert(`Đặt hàng thành công!\n\nMã đơn hàng: ${data.orderID}\nTổng tiền: ${formatCurrency(grandTotal)}\n\nCảm ơn bạn đã mua hàng tại BKMotor!`);
-            
-            // Redirect to home or orders page
-            window.location.href = "/";
+            // Save order info to localStorage (backup method)
+            localStorage.setItem('lastOrder', JSON.stringify({
+                orderID: data.orderID,
+                paymentMethod: paymentMethod,
+                total: grandTotal,
+                orderDate: new Date().toLocaleString('vi-VN')
+            }));
+
+            // Redirect to order success page with URL params
+            window.location.href = `/order-success?orderID=${data.orderID}&paymentMethod=${paymentMethod}&total=${grandTotal}`;
         } else {
             alert("Đặt hàng thất bại: " + (data.message || "Vui lòng thử lại"));
             placeOrderBtn.innerHTML = originalText;

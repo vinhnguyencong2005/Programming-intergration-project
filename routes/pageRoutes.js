@@ -47,6 +47,11 @@ router.get('/checkout', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/checkout.html'));
 });
 
+// Render trang đặt hàng thành công
+router.get('/order-success', (req, res) => {
+  res.sendFile(path.join(__dirname, '../views/order-success.html'));
+});
+
 // Render trang profile
 router.get('/profile', (req, res) => {
   res.sendFile(path.join(__dirname, '../views/profile.html'));
