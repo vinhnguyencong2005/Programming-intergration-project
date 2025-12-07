@@ -1,6 +1,7 @@
 // Admin Reports JavaScript
 
 let allReports = [];
+let allRatings = [];
 let currentReportId = null;
 const reportDetailsModal = new bootstrap.Modal(document.getElementById('reportDetailsModal'));
 
@@ -12,9 +13,10 @@ window.logout = function() {
     }
 };
 
-// Load reports on page load
+// Load data on page load
 window.addEventListener('DOMContentLoaded', () => {
     loadReports();
+    loadRatings();
 });
 
 // Search functionality
@@ -184,3 +186,102 @@ function formatDateTime(dateString) {
         minute: '2-digit'
     });
 }
+
+// ============ RATINGS FUNCTIONALITY ============
+
+// Load all ratings
+async function loadRatings() {
+    try {
+        const response = await fetch('/api/ratings');
+        const data = await response.json();
+        
+        if (data.success) {
+            allRatings = data.data;
+            displayRatings(allRatings);
+        }
+    } catch (error) {
+        console.error('Load ratings error:', error);
+    }
+}
+
+// Search ratings
+document.getElementById('searchRating').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredRatings = allRatings.filter(rating => 
+        rating.customerName.toLowerCase().includes(searchTerm) ||
+        (rating.vehicleName && rating.vehicleName.toLowerCase().includes(searchTerm)) ||
+        (rating.Information && rating.Information.toLowerCase().includes(searchTerm))
+    );
+    displayRatings(filteredRatings);
+});
+
+// Display ratings table
+function displayRatings(ratings) {
+    const tbody = document.getElementById('ratingsTable');
+    
+    if (ratings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Không có đánh giá</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = ratings.map(rating => {
+        const stars = '★'.repeat(rating.Star) + '☆'.repeat(5 - rating.Star);
+        const vehicleDisplay = rating.vehicleName ? 
+            `<strong>${rating.vehicleName}</strong><br><small class="text-muted">${rating.vehicleBrand || ''}</small>` :
+            '<span class="text-danger"><i class="fas fa-exclamation-triangle me-1"></i>Sản phẩm đã xóa</span>';
+        
+        return `
+            <tr>
+                <td>
+                    <strong>${rating.customerName}</strong><br>
+                    <small class="text-muted">ID: ${rating.CustomerID}</small><br>
+                    <small><i class="fas fa-phone me-1"></i>${rating.customerPhone || 'N/A'}</small>
+                </td>
+                <td>
+                    ${vehicleDisplay}<br>
+                    <small class="text-muted">Mã: ${rating.VehicleID}</small>
+                </td>
+                <td>
+                    <span class="text-warning" style="font-size: 1.2rem;">${stars}</span><br>
+                    <small class="text-muted">${rating.Star}/5</small>
+                </td>
+                <td>${rating.Information || '<span class="text-muted"> - </span>'}</td>
+                <td>${formatDateTime(rating.CreateDate)}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="confirmDeleteRating(${rating.CustomerID}, '${rating.VehicleID}')" title="Xóa">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Confirm delete rating
+function confirmDeleteRating(customerID, vehicleID) {
+    if (confirm('Bạn có chắc muốn xóa đánh giá này?')) {
+        deleteRating(customerID, vehicleID);
+    }
+}
+
+// Delete rating
+async function deleteRating(customerID, vehicleID) {
+    try {
+        const response = await fetch(`/api/ratings/${customerID}/${vehicleID}`, {
+            method: 'DELETE'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Xóa đánh giá thành công');
+            loadRatings(); // Reload the list
+        } else {
+            alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+        }
+    } catch (error) {
+        console.error('Delete rating error:', error);
+        alert('Có lỗi xảy ra khi xóa đánh giá');
+    }
+}
+

@@ -269,6 +269,28 @@ const vehicleModel = {
         }
       });
     });
+  },
+
+  // GET AVERAGE RATING FROM RATING TABLE
+  getAverageRating: (vehicleID) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT 
+          AVG(Star) as avgRating,
+          COUNT(*) as totalRatings
+        FROM Rating 
+        WHERE VehicleID = ?
+      `;
+      
+      conn.query(sql, [vehicleID], (err, results) => {
+        if (err) {
+          console.error("Failed to get average rating:", err.message);
+          reject(err);
+        } else {
+          resolve(results[0]);
+        }
+      });
+    });
   }
 };
 

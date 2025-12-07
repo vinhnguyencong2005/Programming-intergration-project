@@ -34,7 +34,7 @@
                 </a>
                 <a href="/admin/reports" class="nav-item active">
                     <i class="fas fa-flag"></i>
-                    <span>Báo Cáo & Liên Hệ</span>
+                    <span>Báo Cáo & Đánh Giá</span>
                 </a>
                 <div class="nav-divider"></div>
                 <a href="/" class="nav-item">
@@ -47,7 +47,7 @@
         <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-header">
-                <h2>Quản Lý Báo Cáo</h2>
+                <h2>Báo Cáo & Đánh Giá</h2>
                 <div class="admin-profile">
                     <i class="fas fa-user-circle"></i>
                     <span class="admin-name">Admin</span>
@@ -95,6 +95,93 @@
                     </div>
                 </div>
 
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button">
+                            <i class="fas fa-flag me-2"></i>Báo Cáo
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="ratings-tab" data-bs-toggle="tab" data-bs-target="#ratings" type="button">
+                            <i class="fas fa-star me-2"></i>Đánh Giá
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="reportTabsContent">
+                    <!-- Reports Tab -->
+                    <div class="tab-pane fade show active" id="reports" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0">Danh Sách Báo Cáo</h5>
+                                    <div class="search-box" style="width: 300px;">
+                                        <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm báo cáo...">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tiêu Đề</th>
+                                                <th>Khách Hàng</th>
+                                                <th>Liên Hệ</th>
+                                                <th>Ngày Gửi</th>
+                                                <th>Thao Tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="reportsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Đang tải...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ratings Tab -->
+                    <div class="tab-pane fade" id="ratings" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="card-title mb-0">Danh Sách Đánh Giá</h5>
+                                    <div class="search-box" style="width: 300px;">
+                                        <input type="text" id="searchRating" class="form-control" placeholder="Tìm kiếm đánh giá...">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Khách Hàng</th>
+                                                <th>Sản Phẩm</th>
+                                                <th>Đánh Giá</th>
+                                                <th>Nhận Xét</th>
+                                                <th>Ngày Đánh Giá</th>
+                                                <th>Thao Tác</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ratingsTable">
+                                            <tr>
+                                                <td colspan="6" class="text-center">Đang tải...</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Old single card - remove this -->
+                <!--
                 <div class="card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -125,6 +212,7 @@
                         </div>
                     </div>
                 </div>
+                -->
             </div>
         </main>
     </div>

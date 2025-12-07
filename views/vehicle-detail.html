@@ -249,6 +249,49 @@
                     </div>
                 </div>
             </div> -->
+
+            <!-- Rating Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-4"><i class="fas fa-star text-warning me-2"></i>Đánh Giá Sản Phẩm</h5>
+                            
+                            <!-- Rating Form -->
+                            <div class="rating-form p-4 bg-light rounded-4 mb-4">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Chọn số sao <span class="text-danger">*</span></label>
+                                        <div class="star-rating">
+                                            <i class="far fa-star" data-rating="1"></i>
+                                            <i class="far fa-star" data-rating="2"></i>
+                                            <i class="far fa-star" data-rating="3"></i>
+                                            <i class="far fa-star" data-rating="4"></i>
+                                            <i class="far fa-star" data-rating="5"></i>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="ratingComment" class="form-label fw-semibold">Nhận xét</label>
+                                        <input type="text" class="form-control" id="ratingComment" maxlength="100" placeholder="Nhập nhận xét của bạn (tùy chọn)">
+                                        <div class="form-text">Tối đa 100 ký tự</div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-warning rounded-pill px-4" id="submitRatingBtn">
+                                    <i class="fas fa-paper-plane me-2"></i>Gửi Đánh Giá
+                                </button>
+                            </div>
+
+                            <!-- Existing Ratings Display -->
+                            <h6 class="fw-bold mb-3">Đánh giá từ khách hàng</h6>
+                            <div id="ratingsDisplay">
+                                <div class="text-center text-muted py-3">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>Đang tải đánh giá...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 

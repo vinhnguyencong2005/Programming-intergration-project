@@ -36,6 +36,7 @@ async function loadVehicleDetail() {
         }
         
         displayVehicleDetail();
+        loadVehicleRatings();
     } catch (error) {
         console.error('Error loading vehicle detail:', error);
         showError();
@@ -56,8 +57,10 @@ function displayVehicleDetail() {
     // Update product name
     document.getElementById('productName').textContent = vehicleData.Name;
     
-    // Update rating
-    displayRating(vehicleData.Rating || 5);
+    // Update rating - use average rating from database
+    const avgRating = vehicleData.AverageRating || 0;
+    const totalRatings = vehicleData.TotalRatings || 0;
+    displayRating(avgRating, totalRatings);
     
     // Update price
     const currentPrice = document.getElementById('currentPrice');
@@ -156,27 +159,32 @@ function changeMainImage(index) {
     });
 }
 
-function displayRating(rating) {
+function displayRating(rating, totalRatings = 0) {
     const starsContainer = document.getElementById('ratingStars');
     const ratingText = document.getElementById('ratingText');
     
     const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    const emptyStars = 5 - Math.ceil(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
     
     let starsHTML = '';
     for (let i = 0; i < fullStars; i++) {
-        starsHTML += '<i class="fas fa-star"></i>';
+        starsHTML += '<i class="fas fa-star text-warning"></i>';
     }
     if (hasHalfStar) {
-        starsHTML += '<i class="fas fa-star-half-alt"></i>';
+        starsHTML += '<i class="fas fa-star-half-alt text-warning"></i>';
     }
     for (let i = 0; i < emptyStars; i++) {
-        starsHTML += '<i class="far fa-star"></i>';
+        starsHTML += '<i class="far fa-star text-warning"></i>';
     }
     
     starsContainer.innerHTML = starsHTML;
-    ratingText.textContent = `${rating.toFixed(1)} / 5.0`;
+    
+    if (totalRatings > 0) {
+        ratingText.textContent = `${rating.toFixed(1)} (${totalRatings} đánh giá)`;
+    } else {
+        ratingText.textContent = 'Chưa có đánh giá';
+    }
 }
 
 function setupActionButtons(isInStock) {
@@ -329,4 +337,149 @@ document.getElementById('submitReportBtn').addEventListener('click', async () =>
         alert('Có lỗi xảy ra khi gửi báo cáo');
     }
 });
+
+// ============ RATING FUNCTIONALITY ============
+let selectedRating = 0;
+
+// Star rating interaction
+const stars = document.querySelectorAll('.star-rating i');
+stars.forEach(star => {
+    star.addEventListener('click', function() {
+        selectedRating = parseInt(this.getAttribute('data-rating'));
+        updateStarDisplay();
+    });
+
+    star.addEventListener('mouseenter', function() {
+        const rating = parseInt(this.getAttribute('data-rating'));
+        highlightStars(rating);
+    });
+});
+
+document.querySelector('.star-rating').addEventListener('mouseleave', () => {
+    updateStarDisplay();
+});
+
+function highlightStars(rating) {
+    stars.forEach((star, index) => {
+        if (index < rating) {
+            star.classList.remove('far');
+            star.classList.add('fas');
+        } else {
+            star.classList.remove('fas');
+            star.classList.add('far');
+        }
+    });
+}
+
+function updateStarDisplay() {
+    highlightStars(selectedRating);
+}
+
+// Submit rating
+document.getElementById('submitRatingBtn').addEventListener('click', async () => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    
+    if (!userData || !userData.ID) {
+        alert('Vui lòng đăng nhập để đánh giá sản phẩm');
+        window.location.href = '/login';
+        return;
+    }
+
+    if (selectedRating === 0) {
+        alert('Vui lòng chọn số sao đánh giá');
+        return;
+    }
+
+    const comment = document.getElementById('ratingComment').value.trim();
+
+    try {
+        const response = await fetch('/api/ratings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                customerID: userData.ID,
+                vehicleID: vehicleID,
+                star: selectedRating,
+                information: comment || null
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Gửi đánh giá thành công! Cảm ơn bạn đã đánh giá.');
+            selectedRating = 0;
+            updateStarDisplay();
+            document.getElementById('ratingComment').value = '';
+            loadVehicleRatings();
+        } else {
+            alert('Có lỗi xảy ra: ' + (data.message || 'Vui lòng thử lại'));
+        }
+    } catch (error) {
+        console.error('Error submitting rating:', error);
+        alert('Có lỗi xảy ra khi gửi đánh giá');
+    }
+});
+
+// Load vehicle ratings
+async function loadVehicleRatings() {
+    try {
+        const response = await fetch(`/api/ratings/vehicle/${vehicleID}`);
+        const data = await response.json();
+
+        if (data.success) {
+            displayRatings(data.data);
+        }
+    } catch (error) {
+        console.error('Error loading ratings:', error);
+        document.getElementById('ratingsDisplay').innerHTML = `
+            <div class="text-center text-muted py-3">
+                <i class="fas fa-exclamation-circle me-2"></i>Không thể tải đánh giá
+            </div>
+        `;
+    }
+}
+
+function displayRatings(ratings) {
+    const container = document.getElementById('ratingsDisplay');
+
+    if (ratings.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-3">
+                <i class="fas fa-star me-2"></i>Chưa có đánh giá nào
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = ratings.map(rating => {
+        const stars = '★'.repeat(rating.Star) + '☆'.repeat(5 - rating.Star);
+        return `
+            <div class="rating-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                        <strong>${rating.customerName}</strong>
+                        <div class="rating-stars">${stars}</div>
+                    </div>
+                    <small class="text-muted">${formatDateTime(rating.CreateDate)}</small>
+                </div>
+                ${rating.Information ? `<p class="mb-0 text-muted">${rating.Information}</p>` : ''}
+            </div>
+        `;
+    }).join('');
+}
+
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
 

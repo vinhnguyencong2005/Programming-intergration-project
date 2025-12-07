@@ -311,3 +311,36 @@
         height: 60px;
     }
 }
+
+/* Rating Section Styles */
+.star-rating {
+    display: inline-flex;
+    gap: 8px;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.star-rating i {
+    color: #ddd;
+    transition: all 0.3s ease;
+}
+
+.star-rating i:hover,
+.star-rating i.active {
+    color: #ffc107;
+    transform: scale(1.1);
+}
+
+.rating-item {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.rating-item:last-child {
+    border-bottom: none;
+}
+
+.rating-stars {
+    color: #ffc107;
+}
+

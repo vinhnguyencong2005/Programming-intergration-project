@@ -16,7 +16,14 @@ const vehicleController = {
     try {
       const vehicles = await vehicleModel.readVehicle('VehicleID', req.params.id);
       if (vehicles.length > 0) {
-        res.json({ success: true, data: vehicles[0] });
+        const vehicle = vehicles[0];
+        
+        // Calculate average rating from Rating table
+        const avgRating = await vehicleModel.getAverageRating(req.params.id);
+        vehicle.AverageRating = parseFloat(avgRating.avgRating) || 0;
+        vehicle.TotalRatings = parseInt(avgRating.totalRatings) || 0;
+        
+        res.json({ success: true, data: vehicle });
       } else {
         res.status(404).json({ success: false, message: 'Vehicle not found' });
       }
