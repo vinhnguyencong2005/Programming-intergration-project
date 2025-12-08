@@ -193,7 +193,6 @@ async function saveNewVehicle() {
                 rating,
                 warehouseID,
                 summary,
-                slug,
                 imageUrls // Send array of images with priorities
             })
         });

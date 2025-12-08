@@ -192,14 +192,14 @@ INSERT INTO Vehicle(VehicleID, Name, Price, Summary, Brand, Type, Stock, Warehou
 ('Vario125_BD', 'Honda Vario 125 Bạc đen', 50000000, 'Honda Vario 125 ghi điểm với thiết kế tổng thể thon gọn, linh hoạt nhưng vẫn toát lên vẻ cá tính nhờ các đường nét góc cạnh được trau chuốt tỉ mỉ. Phiên bản mới mang phong cách thể thao nổi bật hơn với màu đỏ rực rỡ bên cạnh hai tùy chọn đen và xanh đen, phù hợp với nhiều phong cách người dùng. Phần đầu xe được thiết kế mạnh mẽ và hầm hố, với các chi tiết khí động học và cụm đèn LED sắc sảo vuốt nhọn về phía trước, tạo nên diện mạo hiện đại và năng động. Vario 125 sở hữu động cơ 125cc tích hợp hệ thống ngắt động cơ tạm thời Idling Stop, giúp giảm tiếng ồn, tiết kiệm nhiên liệu và thân thiện với môi trường. Ngoài ra, xe còn được trang bị cổng sạc USB loại A 2.1A tiện lợi ở hộc chứa đồ phía trước, giúp người dùng dễ dàng sạc điện thoại khi di chuyển.', 'Honda', 'Automatic', 99, 1),
 ('Wave_D', 'Honda Wave Alpha Đen', 25000000, 'Honda Wave Alpha nổi bật với thiết kế tem hoàn toàn mới mang phong cách "retro" cổ điển nhưng vẫn hiện đại, với logo "Wave Alpha" cách điệu cùng tông xám nhạt tạo điểm nhấn thời trang cho người dùng. Xe được trang bị động cơ 110cc mạnh mẽ, bền bỉ, mang lại hiệu suất cao và khả năng tiết kiệm nhiên liệu vượt trội, giúp tối ưu chi phí vận hành mà vẫn đem đến cảm giác lái hứng khởi. Ngoài ra, Wave Alpha còn được tích hợp chế độ đèn chiếu sáng phía trước luôn bật, giúp người lái có tầm nhìn tốt hơn và tăng khả năng nhận diện của xe ngay cả ban ngày, mang lại sự an toàn và yên tâm trên mọi hành trình.', 'Honda', 'Manual', 99, 1),
 
-('EX155_XDN', 'Yamaha Exciter 155 VVA Xanh Đen', 52000000, 'Yamaha Exciter 155 VVA định nghĩa lại phân khúc xe côn tay thể thao với động cơ 155cc mạnh mẽ, tích hợp công nghệ van biến thiên VVA cho khả năng tăng tốc vượt trội ở mọi dải tua. Xe được trang bị bộ ly hợp A&S (Assist & Slipper) giúp côn nhẹ, chống trượt bánh khi dồn số gấp. Hộp số 6 cấp, thiết kế lấy cảm hứng từ YZF-R1 và hệ thống chìa khóa thông minh Smart Key mang lại trải nghiệm lái thể thao và tiện ích tối đa.', 'Yamaha', 'Clutch', 99, 1),
-('SIRIUS_DB', 'Yamaha Sirius FI Đỏ Bạc', 21000000, 'Yamaha Sirius FI là mẫu xe số phổ thông được ưa chuộng nhờ sự bền bỉ, tiết kiệm nhiên liệu vượt trội với hệ thống phun xăng điện tử FI. Động cơ 115cc vận hành êm ái, ổn định. Thiết kế nhỏ gọn, linh hoạt, phù hợp di chuyển trong đô thị đông đúc. Cốp xe dưới yên đủ chứa áo mưa và vật dụng cá nhân, là lựa chọn kinh tế và đáng tin cậy cho nhu cầu đi lại hàng ngày.', 'Yamaha', 'Manual', 99, 1),
-('GRANDE_T', 'Yamaha Grande Hybrid Trắng', 48000000, 'Yamaha Grande Hybrid là mẫu xe tay ga cao cấp hướng đến phái nữ, nổi bật với thiết kế châu Âu thanh lịch và sang trọng. Xe được trang bị động cơ Blue Core Hybrid 125cc, kết hợp trợ lực điện giúp tăng tốc mượt mà và tiết kiệm nhiên liệu ấn tượng. Cốp xe siêu rộng (27 lít) có đèn LED, nắp bình xăng phía trước tiện lợi và hệ thống khóa thông minh Smart Key là những điểm cộng lớn về tiện ích.', 'Yamaha', 'Automatic', 99, 1),
+('EX155_BX', 'Yamaha Exciter 155 VVA Bạc Xanh', 52000000, 'Yamaha Exciter 155 VVA định nghĩa lại phân khúc xe côn tay thể thao với động cơ 155cc mạnh mẽ, tích hợp công nghệ van biến thiên VVA cho khả năng tăng tốc vượt trội ở mọi dải tua. Xe được trang bị bộ ly hợp A&S (Assist & Slipper) giúp côn nhẹ, chống trượt bánh khi dồn số gấp. Hộp số 6 cấp, thiết kế lấy cảm hứng từ YZF-R1 và hệ thống chìa khóa thông minh Smart Key mang lại trải nghiệm lái thể thao và tiện ích tối đa.', 'Yamaha', 'Clutch', 99, 1),
+('SIRIUS_D', 'Yamaha Sirius FI Đen', 21000000, 'Yamaha Sirius FI là mẫu xe số phổ thông được ưa chuộng nhờ sự bền bỉ, tiết kiệm nhiên liệu vượt trội với hệ thống phun xăng điện tử FI. Động cơ 115cc vận hành êm ái, ổn định. Thiết kế nhỏ gọn, linh hoạt, phù hợp di chuyển trong đô thị đông đúc. Cốp xe dưới yên đủ chứa áo mưa và vật dụng cá nhân, là lựa chọn kinh tế và đáng tin cậy cho nhu cầu đi lại hàng ngày.', 'Yamaha', 'Manual', 99, 1),
+('JANUS_D', 'Yamaha Janus Đen', 48000000, 'Yamaha Janus là mẫu xe tay ga cao cấp hướng đến phái nữ, nổi bật với thiết kế châu Âu thanh lịch và sang trọng. Xe được trang bị động cơ Blue Core Hybrid 125cc, kết hợp trợ lực điện giúp tăng tốc mượt mà và tiết kiệm nhiên liệu ấn tượng. Cốp xe siêu rộng (27 lít) có đèn LED, nắp bình xăng phía trước tiện lợi và hệ thống khóa thông minh Smart Key là những điểm cộng lớn về tiện ích.', 'Yamaha', 'Automatic', 99, 1),
 
 -- Dữ liệu cho SYM
-('ATTILA125_D', 'SYM Attila 125 Đỏ', 35000000, 'SYM Attila 125 sở hữu thiết kế bo tròn cổ điển, mang đậm vẻ đẹp thanh lịch và thời trang. Đèn pha và đèn hậu LED hiện đại, mặt đồng hồ kết hợp analog và LCD hiển thị rõ ràng. Động cơ 125cc vận hành mượt mà, êm ái, phù hợp cho việc di chuyển trong thành phố. Nắp bình xăng được đặt phía trước giúp đổ xăng tiện lợi mà không cần mở yên xe.', 'SYM', 'Automatic', 99, 1),
-('ELEGANT110_X', 'SYM Elegant 110 Xanh', 17500000, 'SYM Elegant 110 là lựa chọn hàng đầu trong phân khúc xe số giá rẻ, hướng đến đối tượng học sinh, sinh viên hoặc người cần một phương tiện cơ bản, bền bỉ. Xe có thiết kế đơn giản, gọn nhẹ, động cơ 110cc tiết kiệm xăng và chi phí bảo dưỡng thấp. Dù giá rẻ, xe vẫn đảm bảo khả năng vận hành ổn định cho nhu cầu đi lại cơ bản hàng ngày.', 'SYM', 'Manual', 99, 1),
-('SHARK125_DN', 'SYM Shark 125 Đen Nhám', 41000000, 'SYM Shark 125 mang phong cách thiết kế thể thao, hầm hố với các đường nét góc cạnh, mạnh mẽ. Xe được trang bị động cơ 125cc cho khả năng vận hành khá bốc và ổn định ở tốc độ cao. Sàn để chân phẳng và rộng rãi tạo tư thế ngồi thoải mái. Hệ thống đèn LED toàn diện và phanh đĩa trước đảm bảo an toàn và tính hiện đại cho xe.', 'SYM', 'Automatic', 99, 1);
+('ANGEL110_D', 'SYM Angel 110 Đen', 20000000, 'SYM Angel 110 sở hữu thiết kế bo tròn cổ điển, mang đậm vẻ đẹp thanh lịch và thời trang. Đèn pha và đèn hậu LED hiện đại, mặt đồng hồ kết hợp analog và LCD hiển thị rõ ràng. Động cơ 125cc vận hành mượt mà, êm ái, phù hợp cho việc di chuyển trong thành phố. Nắp bình xăng được đặt phía trước giúp đổ xăng tiện lợi mà không cần mở yên xe.', 'SYM', 'Manual', 99, 1),
+('ELEGANT50_DM', 'SYM Elegant 50 Đen Mờ', 17500000, 'SYM Elegant 110 là lựa chọn hàng đầu trong phân khúc xe số giá rẻ, hướng đến đối tượng học sinh, sinh viên hoặc người cần một phương tiện cơ bản, bền bỉ. Xe có thiết kế đơn giản, gọn nhẹ, động cơ 110cc tiết kiệm xăng và chi phí bảo dưỡng thấp. Dù giá rẻ, xe vẫn đảm bảo khả năng vận hành ổn định cho nhu cầu đi lại cơ bản hàng ngày.', 'SYM', 'Manual', 99, 1),
+('SHARK50_DN', 'SYM Shark 50 Đen Nhám', 41000000, 'SYM Shark 125 mang phong cách thiết kế thể thao, hầm hố với các đường nét góc cạnh, mạnh mẽ. Xe được trang bị động cơ 125cc cho khả năng vận hành khá bốc và ổn định ở tốc độ cao. Sàn để chân phẳng và rộng rãi tạo tư thế ngồi thoải mái. Hệ thống đèn LED toàn diện và phanh đĩa trước đảm bảo an toàn và tính hiện đại cho xe.', 'SYM', 'Automatic', 99, 1);
 
 INSERT INTO Images(VehicleID, ImagePriority, ImageLink) VALUES
 ('CBR150R_BAC', 1, 'https://i.postimg.cc/7LR9Y9VW/1.webp'),
@@ -226,6 +226,41 @@ INSERT INTO Images(VehicleID, ImagePriority, ImageLink) VALUES
 ('Wave_D', 4, 'https://i.postimg.cc/Gp9YsKxm/4.webp'),
 ('Wave_D', 5, 'https://i.postimg.cc/tg7PVkNg/5.webp'),
 ('Wave_D', 6, 'https://i.postimg.cc/k5ZSNSTb/6.webp');
+
+INSERT INTO Images(VehicleID, ImagePriority, ImageLink) VALUES
+('EX155_BX', 1, 'https://i.postimg.cc/Vkh1my3H/1.webp'),
+('EX155_BX', 2, 'https://i.postimg.cc/SxPqk0wr/2.webp'),
+('EX155_BX', 3, 'https://i.postimg.cc/dVfvwMzW/3.webp'),
+('EX155_BX', 4, 'https://i.postimg.cc/DwNFnVt6/4.webp'),
+('EX155_BX', 5, 'https://i.postimg.cc/nhWZp863/5.webp'),
+('SIRIUS_D', 1, 'https://i.postimg.cc/9XN2Lwp9/1.webp'),
+('SIRIUS_D', 2, 'https://i.postimg.cc/XNDWsB8d/2.webp'),
+('SIRIUS_D', 3, 'https://i.postimg.cc/3rbht0B4/3.webp'),
+('SIRIUS_D', 4, 'https://i.postimg.cc/jqkTMnXn/4.webp'),
+('SIRIUS_D', 5, 'https://i.postimg.cc/L40SxgTZ/5.webp'),
+('SIRIUS_D', 6, 'https://i.postimg.cc/HWPm682J/6.webp'),
+('JANUS_D', 1, 'https://i.postimg.cc/MZYSXfCp/1.webp'),
+('JANUS_D', 2, 'https://i.postimg.cc/brLc540f/2.webp'),
+('JANUS_D', 3, 'https://i.postimg.cc/MHt2Lg0k/3.webp'),
+('JANUS_D', 4, 'https://i.postimg.cc/T1QMsBjM/4.webp'),
+('JANUS_D', 5, 'https://i.postimg.cc/8kbSsf2J/5.webp'),
+('JANUS_D', 6, 'https://i.postimg.cc/sfJr1GkG/6.webp');
+
+INSERT INTO Images(VehicleID, ImagePriority, ImageLink) VALUES
+('ANGEL110_D', 1, 'https://i.postimg.cc/htcQTmvj/1.png'),
+('ANGEL110_D', 2, 'https://i.postimg.cc/SxkYC9RN/2.png'),
+('ANGEL110_D', 3, 'https://i.postimg.cc/GmdTGDtm/3.png'),
+('ANGEL110_D', 4, 'https://i.postimg.cc/K8x3BTj4/4.png'),
+('ELEGANT50_DM', 1, 'https://i.postimg.cc/V6Ck3svM/1.png'),
+('ELEGANT50_DM', 2, 'https://i.postimg.cc/7LcLsJH9/2.png'),
+('ELEGANT50_DM', 3, 'https://i.postimg.cc/Jnkz970X/3.png'),
+('ELEGANT50_DM', 4, 'https://i.postimg.cc/C1qxWM5f/4.png'),
+('SHARK50_DN', 1, 'https://i.postimg.cc/nzBm3t8Z/1.png'),
+('SHARK50_DN', 2, 'https://i.postimg.cc/d07rTy4T/2.png'),
+('SHARK50_DN', 3, 'https://i.postimg.cc/MTVB98kW/3.png'),
+('SHARK50_DN', 4, 'https://i.postimg.cc/xCMm6SrC/4.png'),
+('SHARK50_DN', 5, 'https://i.postimg.cc/qRyK1dfh/5.png'),
+('SHARK50_DN', 6, 'https://i.postimg.cc/C1k8cVy0/6.png');
 
 INSERT INTO Voucher(Code, Reduction, StartDate, EndDate, Quantity, Conditions) VALUES
 ('GIAMTRIEU', 1000000, '2025-11-01 00:00:00', '2025-12-01 00:00:00', 100, 12000000),
