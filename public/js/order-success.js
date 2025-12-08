@@ -62,6 +62,16 @@ function displayOrderInfo(order) {
     const totalFormatted = formatCurrency(order.total);
     document.getElementById('totalAmount').textContent = totalFormatted;
 
+    // Order status - if bank transfer, order is already Accepted
+    const statusBadge = document.getElementById('orderStatus');
+    if (order.paymentMethod === 'bank') {
+        statusBadge.textContent = 'Đã xác nhận';
+        statusBadge.className = 'badge bg-success';
+    } else {
+        statusBadge.textContent = 'Chờ xác nhận';
+        statusBadge.className = 'badge bg-warning text-dark';
+    }
+
     // Show bank transfer section if payment method is bank
     if (order.paymentMethod === 'bank') {
         showBankTransferInfo(order);
@@ -69,17 +79,17 @@ function displayOrderInfo(order) {
 }
 
 // Show bank transfer information
-function showBankTransferInfo(order) {
-    const bankSection = document.getElementById('bankTransferSection');
-    bankSection.style.display = 'block';
+// function showBankTransferInfo(order) {
+//     const bankSection = document.getElementById('bankTransferSection');
+//     bankSection.style.display = 'block';
 
-    // Set transfer amount
-    document.getElementById('transferAmount').textContent = formatCurrency(order.total);
+//     // Set transfer amount
+//     document.getElementById('transferAmount').textContent = formatCurrency(order.total);
 
-    // Set transfer content with order ID
-    const transferContent = `BKMOTOR ${order.orderID}`;
-    document.getElementById('transferContent').textContent = transferContent;
-}
+//     // Set transfer content with order ID
+//     const transferContent = `BKMOTOR ${order.orderID}`;
+//     document.getElementById('transferContent').textContent = transferContent;
+// }
 
 // Format currency
 function formatCurrency(amount) {

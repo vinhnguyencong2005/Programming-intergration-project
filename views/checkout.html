@@ -156,7 +156,7 @@
                         Phương Thức Thanh Toán
                     </div>
                     <div class="payment-methods">
-                        <div class="payment-method active" data-method="cod">
+                        <!-- <div class="payment-method active" data-method="cod">
                             <label class="payment-method-content w-100">
                                 <input type="radio" name="paymentMethod" value="cod" checked>
                                 <div class="payment-method-icon">
@@ -167,7 +167,7 @@
                                     <p>Thanh toán bằng tiền mặt khi nhận hàng</p>
                                 </div>
                             </label>
-                        </div>
+                        </div> -->
 
                         <div class="payment-method" data-method="bank">
                             <label class="payment-method-content w-100">
@@ -328,6 +328,64 @@
             </div>
         </div>
     </footer>
+
+    <!-- QR Payment Modal -->
+    <div class="modal fade" id="qrPaymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">
+                        <i class="fas fa-qrcode me-2 text-primary"></i>
+                        Quét Mã QR Để Thanh Toán
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <!-- Timer -->
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-clock me-2"></i>
+                        <span>Thời gian: <strong id="qrTimer">10:00</strong></span>
+                    </div>
+
+                    <!-- QR Code -->
+                    <div class="qr-container mb-4">
+                        <img id="qrCodeImage" src="" alt="QR Code" class="img-fluid" style="max-width: 300px; border: 2px solid #ddd; border-radius: 10px;">
+                    </div>
+
+                    <!-- Bank Info -->
+                    <div class="bank-info text-start bg-light p-3 rounded">
+                        <h6 class="fw-bold mb-3">Thông Tin Chuyển Khoản:</h6>
+                        <div class="mb-2">
+                            <small class="text-muted">Ngân hàng:</small>
+                            <div class="fw-semibold" id="bankName">-</div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Số tài khoản:</small>
+                            <div class="fw-semibold" id="bankAccountNo">-</div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Chủ tài khoản:</small>
+                            <div class="fw-semibold" id="bankAccountName">-</div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Số tiền:</small>
+                            <div class="fw-semibold text-danger" id="bankAmount">-</div>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted">Nội dung:</small>
+                            <div class="fw-semibold" id="bankContent">-</div>
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div id="paymentStatusMessage" class="mt-3" style="display: none;"></div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/navbar.js"></script>

@@ -158,6 +158,20 @@ CREATE TABLE AddToWishlist ( -- This is like a wishlist for user
     FOREIGN KEY (VehicleID) REFERENCES Vehicle(VehicleID) ON DELETE CASCADE
 );
 
+-- Enable the MySQL Event Scheduler
+SET GLOBAL event_scheduler = ON;
+
+-- Create event to auto-cancel orders older than 10 minutes
+DROP EVENT IF EXISTS auto_cancel_expired_orders;
+
+CREATE EVENT auto_cancel_expired_orders
+ON SCHEDULE EVERY 1 MINUTE
+DO 
+  UPDATE Orders
+  SET Status = 'Cancelled'
+  WHERE Status = 'Pending'
+    AND TIMESTAMPDIFF(MINUTE, CreateDate, NOW()) > 10;
+
 -- các mật khẩu sẽ lần lượt là: "matkhau1", "matkhau2", "matkhau3", "matkhau4", "matkhau5", "matkhau6", "matkhau7"
     
 INSERT INTO Customer(Password, Username, Name, Phone, Email, Address) VALUES

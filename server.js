@@ -18,6 +18,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
 const voucherRoutes = require('./routes/voucherRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // Khởi tạo Express app
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/vouchers', voucherRoutes);
+app.use('/api/payment', paymentRoutes);
 app.use('/api', reportRoutes);
 app.use('/auth', authRoutes);
 
@@ -54,6 +56,17 @@ app.use((req, res) => {
 // ============ START SERVER ============
 app.listen(PORT, () => {
   console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`💳 Payment QR system enabled with Sepay`);
+  
+  // Start auto-checking transactions every 10 seconds
+  const { updateOrderStatus } = require('./controllers/paymentController');
+  
+  // Run once immediately
+  updateOrderStatus();
+  
+  // Then run every 10 seconds
+  setInterval(updateOrderStatus, 10000);
+  console.log(`✅ Auto-check transactions started (every 10s)`);
 });
 
 module.exports = app;

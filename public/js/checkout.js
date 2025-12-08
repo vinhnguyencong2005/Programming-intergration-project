@@ -3,6 +3,9 @@ let cartItems = [];
 let userData = null;
 let selectedVoucher = null;
 let voucherModal = null;
+let qrModal = null;
+let qrTimer = null;
+let qrPollInterval = null;
 
 document.addEventListener("DOMContentLoaded", function() {
     // Check authentication
@@ -16,6 +19,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Initialize voucher modal
     voucherModal = new bootstrap.Modal(document.getElementById('voucherModal'));
+
+    // Initialize QR modal
+    const qrModalElement = document.getElementById('qrPaymentModal');
+    if (qrModalElement) {
+        qrModal = new bootstrap.Modal(qrModalElement);
+        qrModalElement.addEventListener('hidden.bs.modal', function () {
+            clearQRTimers();
+        });
+    }
 
     // Load cart items and user info
     loadCheckoutData();
@@ -226,25 +238,34 @@ async function handlePlaceOrder() {
         const data = await response.json();
 
         if (data.success) {
-            // Clear cart
-            await fetch("/api/cart/clear/all", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ customerID: userData.ID })
-            });
+            const orderID = data.orderID;
+            
+            // Check if payment method is bank transfer
+            if (paymentMethod === 'bank') {
+                // Show QR payment modal
+                placeOrderBtn.innerHTML = originalText;
+                placeOrderBtn.disabled = false;
+                
+                await showQRPaymentModal(orderID, grandTotal);
+            } else {
+                // COD - Clear cart and redirect
+                await fetch("/api/cart/clear/all", {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ customerID: userData.ID })
+                });
 
-            // Save order info to localStorage (backup method)
-            localStorage.setItem('lastOrder', JSON.stringify({
-                orderID: data.orderID,
-                paymentMethod: paymentMethod,
-                total: grandTotal,
-                orderDate: new Date().toLocaleString('vi-VN')
-            }));
+                localStorage.setItem('lastOrder', JSON.stringify({
+                    orderID: orderID,
+                    paymentMethod: paymentMethod,
+                    total: grandTotal,
+                    orderDate: new Date().toLocaleString('vi-VN')
+                }));
 
-            // Redirect to order success page with URL params
-            window.location.href = `/order-success?orderID=${data.orderID}&paymentMethod=${paymentMethod}&total=${grandTotal}`;
+                window.location.href = `/order-success?orderID=${orderID}&paymentMethod=${paymentMethod}&total=${grandTotal}`;
+            }
         } else {
             alert("Đặt hàng thất bại: " + (data.message || "Vui lòng thử lại"));
             placeOrderBtn.innerHTML = originalText;
@@ -427,4 +448,148 @@ function showAlert(message, type = 'success') {
     setTimeout(() => {
         alertDiv.remove();
     }, 3000);
+}
+
+// ============ QR PAYMENT FUNCTIONS ============
+
+// Show QR Payment Modal
+async function showQRPaymentModal(orderID, amount) {
+    try {
+        // Generate QR Code
+        const response = await fetch('/api/payment/generate-qr', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderId: orderID,
+                amount: amount
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            const { qrUrl, bankInfo } = data.data;
+
+            // Set QR code image
+            document.getElementById('qrCodeImage').src = qrUrl;
+
+            // Set bank info
+            document.getElementById('bankName').textContent = bankInfo.bankName;
+            document.getElementById('bankAccountNo').textContent = bankInfo.accountNo;
+            document.getElementById('bankAccountName').textContent = bankInfo.accountName;
+            document.getElementById('bankAmount').textContent = formatCurrency(bankInfo.amount);
+            document.getElementById('bankContent').textContent = bankInfo.content;
+
+            // Show modal
+            qrModal.show();
+
+            // Start countdown timer (10 minutes)
+            startQRTimer(600);
+
+            // Start polling payment status (every 5 seconds)
+            startPaymentPolling(orderID, amount);
+        } else {
+            alert('Không thể tạo mã QR');
+        }
+    } catch (error) {
+        console.error('Error showing QR modal:', error);
+        alert('Có lỗi xảy ra khi tạo mã QR');
+    }
+}
+
+// Start countdown timer
+function startQRTimer(seconds) {
+    let remaining = seconds;
+    const timerElement = document.getElementById('qrTimer');
+
+    qrTimer = setInterval(() => {
+        const minutes = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        timerElement.textContent = `${minutes}:${secs.toString().padStart(2, '0')}`;
+
+        if (remaining <= 0) {
+            clearInterval(qrTimer);
+            showPaymentExpired();
+        }
+
+        remaining--;
+    }, 1000);
+}
+
+// Start polling payment status
+function startPaymentPolling(orderID, amount) {
+    qrPollInterval = setInterval(async () => {
+        try {
+            const response = await fetch(`/api/payment/check/${orderID}`);
+            const data = await response.json();
+
+            if (data.success) {
+                const status = data.data.status;
+
+                if (status === 'Paid') {
+                    clearQRTimers();
+                    showPaymentSuccess(orderID, amount);
+                } else if (status === 'Expired') {
+                    clearQRTimers();
+                    showPaymentExpired();
+                }
+            }
+        } catch (error) {
+            console.error('Error polling payment:', error);
+        }
+    }, 5000); // Poll every 5 seconds
+}
+
+// Clear timers
+function clearQRTimers() {
+    if (qrTimer) {
+        clearInterval(qrTimer);
+        qrTimer = null;
+    }
+    if (qrPollInterval) {
+        clearInterval(qrPollInterval);
+        qrPollInterval = null;
+    }
+}
+
+// Payment success
+async function showPaymentSuccess(orderID, amount) {
+    // Clear cart
+    await fetch("/api/cart/clear/all", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ customerID: userData.ID })
+    });
+
+    // Save to localStorage
+    localStorage.setItem('lastOrder', JSON.stringify({
+        orderID: orderID,
+        paymentMethod: 'bank',
+        total: amount,
+        orderDate: new Date().toLocaleString('vi-VN')
+    }));
+
+    // Hide modal and redirect
+    qrModal.hide();
+    
+    setTimeout(() => {
+        window.location.href = `/order-success?orderID=${orderID}&paymentMethod=bank&total=${amount}`;
+    }, 500);
+}
+
+// Payment expired
+function showPaymentExpired() {
+    const statusElement = document.getElementById('paymentStatusMessage');
+    statusElement.innerHTML = `
+        <div class="alert alert-danger">
+            <i class="fas fa-times-circle me-2"></i>
+            <strong>Hết thời gian!</strong><br>
+            Vui lòng thanh toán trong 10 phút.
+        </div>
+    `;
+    statusElement.style.display = 'block';
 }
