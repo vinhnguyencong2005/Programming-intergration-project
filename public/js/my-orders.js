@@ -79,12 +79,15 @@ function displayOrders(orders) {
         groupedOrders[item.OrderID].items.push(item);
     });
     
+    // Sort orders by OrderID descending (newest first)
+    const sortedOrders = Object.values(groupedOrders).sort((a, b) => b.OrderID - a.OrderID);
+    
     // Return the actual number of orders (not order items)
-    const orderCount = Object.keys(groupedOrders).length;
+    const orderCount = sortedOrders.length;
     
     // Generate HTML
     let html = '';
-    Object.values(groupedOrders).forEach(order => {
+    sortedOrders.forEach(order => {
         const statusClass = order.Status.toLowerCase();
         const statusText = {
             'pending': 'Chờ xác nhận',
