@@ -99,6 +99,29 @@ const orderItemModel = {
         }
       });
     });
+  },
+
+  // Check if customer has purchased a vehicle
+  checkCustomerPurchased: (customerID, vehicleID) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        SELECT COUNT(*) as count
+        FROM OrderItem oi
+        JOIN Orders o ON oi.OrderID = o.OrderID
+        WHERE o.CustomerID = ?
+          AND oi.VehicleID = ?
+          AND o.Status IN ('Accepted', 'Delivered')
+      `;
+
+      conn.query(sql, [customerID, vehicleID], (err, results) => {
+        if (err) {
+          console.error("Check customer purchased failed:", err.message);
+          reject(err);
+        } else {
+          resolve(results[0].count > 0);
+        }
+      });
+    });
   }
 };
 

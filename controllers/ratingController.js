@@ -1,4 +1,5 @@
 const ratingModel = require('../models/ratingModel');
+const orderItemModel = require('../models/orderItemmodel');
 
 const ratingController = {
   // Create or update rating
@@ -17,6 +18,16 @@ const ratingController = {
         return res.status(400).json({ 
           success: false, 
           message: 'Số sao phải từ 1 đến 5' 
+        });
+      }
+
+      // Check if customer has purchased this vehicle
+      const hasPurchased = await orderItemModel.checkCustomerPurchased(customerID, vehicleID);
+      
+      if (!hasPurchased) {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'Bạn chỉ có thể đánh giá sản phẩm đã mua' 
         });
       }
 
