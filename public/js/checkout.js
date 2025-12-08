@@ -155,7 +155,7 @@ async function handlePlaceOrder() {
         const phone = document.getElementById("customerPhone").value.trim();
         const email = document.getElementById("customerEmail").value.trim();
         const address = document.getElementById("customerAddress").value.trim();
-        const note = document.getElementById("orderNote").value.trim();
+        // const note = document.getElementById("orderNote").value.trim();
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
 
         if (!name || !phone || !email || !address) {
@@ -198,7 +198,7 @@ async function handlePlaceOrder() {
                 email: email,
                 address: address
             },
-            note: note,
+            // note: note,
             paymentMethod: paymentMethod,
             items: cartItems.map(item => ({
                 vehicleID: item.VehicleID,
