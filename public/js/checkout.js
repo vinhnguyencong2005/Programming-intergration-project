@@ -240,6 +240,15 @@ async function handlePlaceOrder() {
         if (data.success) {
             const orderID = data.orderID;
             
+            // Clear cart immediately after order creation
+            await fetch("/api/cart/clear/all", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ customerID: userData.ID })
+            });
+            
             // Check if payment method is bank transfer
             if (paymentMethod === 'bank') {
                 // Show QR payment modal
@@ -248,15 +257,7 @@ async function handlePlaceOrder() {
                 
                 await showQRPaymentModal(orderID, grandTotal);
             } else {
-                // COD - Clear cart and redirect
-                await fetch("/api/cart/clear/all", {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ customerID: userData.ID })
-                });
-
+                // COD - Redirect to success page
                 localStorage.setItem('lastOrder', JSON.stringify({
                     orderID: orderID,
                     paymentMethod: paymentMethod,
@@ -556,15 +557,9 @@ function clearQRTimers() {
 
 // Payment success
 async function showPaymentSuccess(orderID, amount) {
-    // Clear cart
-    await fetch("/api/cart/clear/all", {
-        method: "DELETE",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ customerID: userData.ID })
-    });
-
+    // Cart already cleared when order was placed
+    // Just save to localStorage and redirect
+    
     // Save to localStorage
     localStorage.setItem('lastOrder', JSON.stringify({
         orderID: orderID,
