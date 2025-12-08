@@ -1,7 +1,11 @@
 // Admin Dashboard JavaScript
 
 let allOrders = [];
-let currentFilter = 'all';
+let currentFilter = {
+    status: 'all',
+    startDate: null,
+    endDate: null
+};
 
 // Logout function - make it global
 window.logout = function() {
@@ -119,23 +123,48 @@ function displayOrders(orders) {
     }).join('');
 }
 
-// Filter orders
+// Filter orders (deprecated - kept for backward compatibility)
 function filterOrders(status) {
-    currentFilter = status;
+    document.getElementById('statusFilter').value = status;
+    applyFilters();
+}
+
+// Apply filters
+window.applyFilters = function() {
+    const status = document.getElementById('statusFilter').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
     
-    // Update button states
-    document.querySelectorAll('.btn-group .btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
+    currentFilter = { status, startDate, endDate };
     
-    // Filter and display
-    const filtered = status === 'all' 
-        ? allOrders 
-        : allOrders.filter(order => order.Status === status);
+    let filtered = allOrders;
+    
+    // Filter by status
+    if (status !== 'all') {
+        filtered = filtered.filter(order => order.Status === status);
+    }
+    
+    // Filter by date range
+    if (startDate) {
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        filtered = filtered.filter(order => {
+            const orderDate = new Date(order.CreateDate);
+            return orderDate >= start;
+        });
+    }
+    
+    if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        filtered = filtered.filter(order => {
+            const orderDate = new Date(order.CreateDate);
+            return orderDate <= end;
+        });
+    }
     
     displayOrders(filtered);
-}
+};
 
 // View order details
 const orderDetailsModal = new bootstrap.Modal(document.getElementById('orderDetailsModal'));
