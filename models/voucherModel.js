@@ -60,6 +60,30 @@ const voucherModel = {
         });
     },
     
+    // Decrease voucher quantity
+    decreaseQuantity: (code, amount = 1) => {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE Voucher 
+                SET Quantity = Quantity - ? 
+                WHERE Code = ? AND Quantity >= ?
+            `;
+
+            conn.query(sql, [amount, code, amount], (err, results) => {
+                if (err) {
+                    console.error('Error decreasing voucher quantity:', err);
+                    return reject(err);
+                }
+                if (results.affectedRows === 0) {
+                    console.log('Voucher not found or insufficient quantity:', code);
+                    return resolve(false);
+                }
+                console.log('Voucher quantity decreased:', code);
+                resolve(true);
+            });
+        });
+    },
+
     // Update voucher
     updateVoucher: (code, voucherData) => {
         return new Promise((resolve, reject) => {

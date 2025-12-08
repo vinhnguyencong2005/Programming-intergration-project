@@ -51,6 +51,14 @@ const voucherController = {
         });
       }
 
+      // Validate conditions >= reduction to prevent negative grand total
+      if (parseFloat(conditions) < parseFloat(reduction)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Điều kiện áp dụng phải lớn hơn hoặc bằng giá trị giảm'
+        });
+      }
+
       // Check if voucher code already exists
       const existingVoucher = await voucherModel.getVoucherByCode(code);
       if (existingVoucher) {
@@ -97,6 +105,14 @@ const voucherController = {
         return res.status(400).json({ 
           success: false, 
           message: 'Vui lòng điền đầy đủ thông tin' 
+        });
+      }
+
+      // Validate conditions >= reduction to prevent negative grand total
+      if (parseFloat(conditions) < parseFloat(reduction)) {
+        return res.status(400).json({
+          success: false,
+          message: 'Điều kiện áp dụng phải lớn hơn hoặc bằng giá trị giảm'
         });
       }
 

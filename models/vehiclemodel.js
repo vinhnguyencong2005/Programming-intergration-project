@@ -99,6 +99,29 @@ const vehicleModel = {
     });
   },
 
+  // Decrease stock
+  decreaseStock: (vehicleID, quantity) => {
+    return new Promise((resolve, reject) => {
+      const sql = `
+        UPDATE Vehicle 
+        SET Stock = Stock - ? 
+        WHERE VehicleID = ? AND Stock >= ?
+      `;
+
+      conn.query(sql, [quantity, vehicleID, quantity], (err, result) => {
+        if (err) {
+          console.error("Decrease stock failed:", err.message);
+          reject(err);
+        } else if (result.affectedRows === 0) {
+          reject(new Error(`Not enough stock for vehicle ${vehicleID}`));
+        } else {
+          console.log(`Vehicle ${vehicleID} stock decreased by ${quantity}`);
+          resolve(result);
+        }
+      });
+    });
+  },
+
   // UPDATE
   updateVehicle: (vehicleID, updates) => {
     return new Promise((resolve, reject) => {

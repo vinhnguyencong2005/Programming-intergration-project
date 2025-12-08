@@ -40,6 +40,22 @@ const applyModel = {
         });
     },
 
+    // Get applied voucher (alias for getVoucherForOrder)
+    getAppliedVoucher: (orderID) => {
+        return new Promise((resolve, reject) => {
+            const sql = `SELECT OrderID, VoucherCode FROM Apply WHERE OrderID = ?`;
+            
+            conn.query(sql, [orderID], (err, results) => {
+                if (err) {
+                    console.error('Error getting applied voucher:', err.message);
+                    reject(err);
+                } else {
+                    resolve(results[0] || null);
+                }
+            });
+        });
+    },
+
     // DELETE - Remove voucher from order
     removeVoucherFromOrder: (orderID) => {
         return new Promise((resolve, reject) => {

@@ -1,5 +1,9 @@
 const axios = require('axios');
 const orderModel = require('../models/ordermodel');
+const orderItemModel = require('../models/orderItemmodel');
+const applyModel = require('../models/applyModel');
+const vehicleModel = require('../models/vehiclemodel');
+const voucherModel = require('../models/voucherModel');
 
 const SEPAY_API_KEY = process.env.SEPAY_API_KEY || 'YOUR_SEPAY_API_KEY_HERE';
 
@@ -207,7 +211,50 @@ async function updateOrderStatus() {
       );
 
       if (matchingTransaction) {
+        console.log(`🔄 Processing order ${order.OrderID} - Updating status to Accepted...`);
+        
+        // Update order status to Accepted
         await orderModel.updateOrderStatus(order.OrderID, 'Accepted');
+        console.log(`✅ Order ${order.OrderID} status updated to Accepted`);
+        
+        // Decrease stock for all items in this order
+        try {
+          console.log(`📦 Getting order items for order ${order.OrderID}...`);
+          const orderItems = await orderItemModel.getOrderItems(order.OrderID);
+          console.log(`📦 Found ${orderItems.length} items in order ${order.OrderID}`);
+          
+          for (const item of orderItems) {
+            if (item.VehicleID) {
+              console.log(`⬇️ Decreasing stock for ${item.VehicleID} by ${item.Quantity}...`);
+              await vehicleModel.decreaseStock(item.VehicleID, item.Quantity);
+              console.log(`✅ Stock decreased for ${item.VehicleID}: -${item.Quantity}`);
+            } else {
+              console.log(`⚠️ Item has no VehicleID:`, item);
+            }
+          }
+        } catch (stockError) {
+          console.error(`❌ Error decreasing stock for order ${order.OrderID}:`, stockError.message);
+          console.error('Stack trace:', stockError.stack);
+        }
+
+        // Decrease voucher quantity if voucher was applied
+        try {
+          console.log(`🎫 Checking for applied voucher on order ${order.OrderID}...`);
+          const appliedVoucher = await applyModel.getAppliedVoucher(order.OrderID);
+          console.log(`🎫 Applied voucher result:`, appliedVoucher);
+          
+          if (appliedVoucher && appliedVoucher.VoucherCode) {
+            console.log(`⬇️ Decreasing voucher quantity for ${appliedVoucher.VoucherCode}...`);
+            await voucherModel.decreaseQuantity(appliedVoucher.VoucherCode, 1);
+            console.log(`✅ Voucher quantity decreased: ${appliedVoucher.VoucherCode}`);
+          } else {
+            console.log(`ℹ️ No voucher applied to order ${order.OrderID}`);
+          }
+        } catch (voucherError) {
+          console.error(`❌ Error decreasing voucher for order ${order.OrderID}:`, voucherError.message);
+          console.error('Stack trace:', voucherError.stack);
+        }
+
         console.log(`✅ Order ${order.OrderID} confirmed - Amount: ${order.GrandTotal} VND`);
       }
     }

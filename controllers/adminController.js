@@ -1,7 +1,10 @@
 const adminModel = require('../models/adminModel');
 const userModel = require('../models/usermodel');
 const orderModel = require('../models/ordermodel');
+const orderItemModel = require('../models/orderItemmodel');
+const applyModel = require('../models/applyModel');
 const vehicleModel = require('../models/vehiclemodel');
+const voucherModel = require('../models/voucherModel');
 
 const adminController = {
   // Dashboard
@@ -48,6 +51,29 @@ const adminController = {
       const updated = await orderModel.updateOrderStatus(orderId, status);
 
       if (updated) {
+        // If order is being accepted, decrease stock and voucher
+        if (status === 'Accepted') {
+          try {
+            // Decrease stock for all items in this order
+            const orderItems = await orderItemModel.getOrderItems(orderId);
+            for (const item of orderItems) {
+              if (item.VehicleID) {
+                await vehicleModel.decreaseStock(item.VehicleID, item.Quantity);
+              }
+            }
+
+            // Decrease voucher quantity if voucher was applied
+            const appliedVoucher = await applyModel.getAppliedVoucher(orderId);
+            
+            if (appliedVoucher && appliedVoucher.VoucherCode) {
+              await voucherModel.decreaseQuantity(appliedVoucher.VoucherCode, 1);
+            }
+          } catch (inventoryError) {
+            console.error('Stack trace:', inventoryError.stack);
+            // Continue even if inventory update fails
+          }
+        }
+
         res.json({ success: true, message: 'Cập nhật trạng thái thành công' });
       } else {
         res.status(404).json({ 

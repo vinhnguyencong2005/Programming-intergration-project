@@ -35,10 +35,10 @@ const orderItemModel = {
           oi.CreateDate,
           oi.VehicleID,
           v.Name as VehicleName,
-          v.Color,
+          v.Brand,
           v.Price as CurrentPrice
         FROM OrderItem oi
-        JOIN Vehicle v ON oi.VehicleID = v.VehicleID
+        LEFT JOIN Vehicle v ON oi.VehicleID = v.VehicleID
         WHERE oi.OrderID = ?
       `;
 

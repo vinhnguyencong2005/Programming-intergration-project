@@ -1,6 +1,7 @@
 const orderModel = require('../models/ordermodel');
 const orderItemModel = require('../models/orderItemmodel');
 const applyModel = require('../models/applyModel');
+const vehicleModel = require('../models/vehiclemodel');
 
 const orderController = {
   // Lấy tất cả orders
@@ -80,6 +81,25 @@ const orderController = {
           success: false, 
           message: 'Customer ID and items are required' 
         });
+      }
+
+      // Check stock availability for all items
+      for (const item of items) {
+        const vehicle = await vehicleModel.readVehicle('VehicleID', item.vehicleID);
+        if (!vehicle || vehicle.length === 0) {
+          return res.status(400).json({
+            success: false,
+            message: `Sản phẩm ${item.vehicleID} không tồn tại`
+          });
+        }
+
+        const currentStock = vehicle[0].Stock;
+        if (currentStock < item.quantity) {
+          return res.status(400).json({
+            success: false,
+            message: `Sản phẩm "${vehicle[0].Name}" không đủ số lượng. Còn lại: ${currentStock}, yêu cầu: ${item.quantity}`
+          });
+        }
       }
 
       // Create order
