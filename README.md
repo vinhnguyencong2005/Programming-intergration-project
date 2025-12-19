@@ -156,13 +156,13 @@ BANK_NAME=YOUR BANK NAME
 ```
 
 **Các ngân hàng hỗ trợ:**
-- Vietinbank (970415)
-- Vietcombank (970436)
-- Techcombank (970407)
-- BIDV (970418)
-- ACB (970416)
-- VPBank (970432)
-- MB Bank (970422)
+- Vietinbank
+- Vietcombank
+- Techcombank
+- BIDV
+- ACB
+- VPBank
+- MB Bank
 - Và nhiều ngân hàng khác...
 
 #### 4. Test thanh toán:
